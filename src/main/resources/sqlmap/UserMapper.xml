@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.UserDao">
+    <resultMap id="User" type="com.yangchenle.electricityconsumptionsystem.entity.UserEntity">
+        <result column="UserId" property="userId"/>
+        <result column="UserName" property="userName"/>
+        <result column="UserPhone" property="userPhone"/>
+        <result column="UserAccount" property="userAccount"/>
+        <result column="UserAddress" property="userAddress"/>
+        <result column="IdCard" property="idCard"/>
+        <result column="AddTime" property="addTime"/>
+        <result column="UpdateTime" property="updateTime"/>
+    </resultMap>
+
+    <sql id="allFile">
+        UserId,
+        UserName,
+        UserPhone,
+        UserAccount,
+        UserAddress,
+        IdCard,
+        AddTime,
+        UpdateTime
+    </sql>
+</mapper>

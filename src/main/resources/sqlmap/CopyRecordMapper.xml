@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.CopyRecordDao">
+    <resultMap id="CopyRecord" type="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
+        <result column="CopyId" property="copyId"/>
+        <result column="ElectricId" property="electricId"/>
+        <result column="CopyData" property="copyData"/>
+        <result column="AddTime" property="addTime"/>
+        <result column="UpdateTime" property="updateTime"/>
+    </resultMap>
+    <sql id="allFile">
+        CopyId,
+        ElectricId,
+        CopyData,
+        AddTime,
+        UpdateTime
+    </sql>
+</mapper>

@@ -1,7 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.common;
 
 import com.google.common.collect.Maps;
-import com.yangnan.selfhelpordingsystem.emun.HttpStatus;
+import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
