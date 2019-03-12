@@ -8,6 +8,7 @@
         <result column="AddTime" property="addTime"/>
         <result column="UpdateTime" property="updateTime"/>
     </resultMap>
+
     <sql id="allFile">
         CopyId,
         ElectricId,
@@ -15,4 +16,24 @@
         AddTime,
         UpdateTime
     </sql>
+
+    <insert id="insertCopyRecord" parameterType="map">
+        INSERT INTO
+        copy_record(CopyId, ElectricId, CopyData, AddTime, UpdateTime)
+        VALUES
+        (
+        #{copyId},
+        #{electricId},
+        #{copyData},
+        NOW(),
+        NOW()
+        )
+    </insert>
+
+    <update id="updateCopyRecord">
+        UPDATE copy_record
+        SET
+        CopyData = #{copyData}
+        WHERE CopyId = #{copyId}
+    </update>
 </mapper>

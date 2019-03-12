@@ -21,4 +21,12 @@
        AddTime,
        UpdateTime
     </sql>
+
+    <select id="queryById" parameterType="map" resultMap="Electric">
+        SELECT
+        <include refid="allFile"/>
+        FROM electric
+        WHERE
+        UserId = #{userId }
+    </select>
 </mapper>
