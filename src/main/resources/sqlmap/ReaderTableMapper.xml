@@ -24,13 +24,13 @@
         WHERE ReaderPhone = #{readerPhone}
     </select>
 
-    <insert id="insertReader" parameterType="map">
+    <insert id="insertReader" parameterType="map" useGeneratedKeys="true" keyProperty="readerInfo.readerId">
         INSERT INTO
         reader_account(ReaderId, ReaderName, ReaderPhone, AddTime, UpdateTime)
         VALUES (
-        #{readerId },
-        #{readerName },
-        #{readerPhone },
+        #{readerInfo.readerId },
+        #{readerInfo.readerName },
+        #{readerInfo.readerPhone },
         NOW(),
         NOW()
         )

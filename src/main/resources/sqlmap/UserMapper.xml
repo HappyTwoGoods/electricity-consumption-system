@@ -33,18 +33,18 @@
         UserPhone = #{userPhone}
     </select>
 
-    <insert id="insertUser" parameterType="map">
+    <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="userInfo.userId">
         INSERT INTO
         user_account(UserId, UserName, UserPhone, UserAccount, UserAddress, AddTime, UpdateTime, IdCard)
         VALUES (
-        #{userId },
-        #{userName },
-        #{userPhone },
-        #{userAccount },
-        #{userAddress },
+        #{userInfo.userId },
+        #{userInfo.userName },
+        #{userInfo.userPhone },
+        #{userInfo.userAccount },
+        #{userInfo.userAddress },
         NOW(),
         NOW(),
-        #{idCard }
+        #{userInfo.idCard }
         )
     </insert>
 

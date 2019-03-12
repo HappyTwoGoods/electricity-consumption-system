@@ -20,7 +20,7 @@
        UpdateTime
     </sql>
 
-    <select id="queryById" parameterType="map" resultMap="Electric">
+    <select id="queryEleById" parameterType="map" resultMap="Electric">
         SELECT
         <include refid="allFile"/>
         FROM electric
