@@ -2,6 +2,7 @@ package com.yangchenle.electricityconsumptionsystem.entity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -22,4 +23,6 @@ public class UserEntity {
     private Date addTime;
 
     private Date updateTime;
+
+    private BigDecimal price;
 }

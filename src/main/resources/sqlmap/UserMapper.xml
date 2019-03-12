@@ -22,4 +22,27 @@
         AddTime,
         UpdateTime
     </sql>
+
+    <select id="userLogin" parameterType="map" resultMap="User">
+        SELECT
+        <include refid="allFile"/>
+        FROM user_account
+        WHERE
+        UserPhone = #{userPhone}
+    </select>
+
+    <select id="insertUser" parameterType="map">
+        INSERT INTO
+        user_account(UserId, UserName, UserPhone, UserAccount, UserAddress, AddTime, UpdateTime, IdCard)
+        VALUES (
+        #{userId },
+        #{userName },
+        #{userPhone },
+        #{userAccount },
+        #{userAddress },
+        NOW(),
+        NOW(),
+        #{idCard }
+        )
+    </select>
 </mapper>
