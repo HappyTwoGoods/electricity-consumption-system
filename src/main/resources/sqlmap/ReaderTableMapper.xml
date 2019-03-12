@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.ReaderTableDao">
+    <resultMap id="ReaderTable" type="com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity">
+        <result column="ReaderId" property="readerId"/>
+        <result column="ReaderName" property="readerName"/>
+        <result column="ReaderPhone" property="readerPhone"/>
+        <result column="AddTime" property="addTime"/>
+        <result column="UpdateTime" property="updateTime"/>
+    </resultMap>
+
+    <sql id="allFile">
+        ReaderId,
+        ReaderName,
+        ReaderPhone,
+        AddTime,
+        UpdateTime
+    </sql>
+
+    <select id="ReaderLogin" parameterType="map" resultMap="ReaderTable">
+        SELECT
+        <include refid="allFile"/>
+        FROM reader_account
+        WHERE ReaderPhone = #{readerPhone}
+    </select>
+
+    <insert id="insertReader" parameterType="map">
+        INSERT INTO
+        reader_account(ReaderId, ReaderName, ReaderPhone, AddTime, UpdateTime)
+        VALUES (
+        #{readerId },
+        #{readerName },
+        #{readerPhone },
+        NOW(),
+        NOW()
+        )
+    </insert>
+</mapper>

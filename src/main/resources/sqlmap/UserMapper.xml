@@ -10,6 +10,7 @@
         <result column="IdCard" property="idCard"/>
         <result column="AddTime" property="addTime"/>
         <result column="UpdateTime" property="updateTime"/>
+        <result column="Price" property="price"/>
     </resultMap>
 
     <sql id="allFile">
@@ -20,7 +21,8 @@
         UserAddress,
         IdCard,
         AddTime,
-        UpdateTime
+        UpdateTime,
+        Price
     </sql>
 
     <select id="userLogin" parameterType="map" resultMap="User">
@@ -31,7 +33,7 @@
         UserPhone = #{userPhone}
     </select>
 
-    <select id="insertUser" parameterType="map">
+    <insert id="insertUser" parameterType="map">
         INSERT INTO
         user_account(UserId, UserName, UserPhone, UserAccount, UserAddress, AddTime, UpdateTime, IdCard)
         VALUES (
@@ -44,5 +46,38 @@
         NOW(),
         #{idCard }
         )
+    </insert>
+
+    <select id="queryById" parameterType="map" resultMap="User">
+        SELECT
+        <include refid="allFile"/>
+        FROM
+        user_account
+        WHERE UserId = #{userId }
     </select>
+
+    <update id="updateUserInfo">
+        UPDATE user_account
+        <set>
+            <if test="userName == null and userName != ''">
+                UserName = #{userName }
+            </if>
+            <if test="userAccount == null and userAccount != ''">
+                userAccount = #{userAccount }
+            </if>
+            <if test="userAddress == null and userAddress != ''">
+                UserAddress = #{userAddress}
+            </if>
+            UpdateTime = NOW()
+        </set>
+        WHERE UserId = #{userId}
+    </update>
+
+    <update id="payById">
+        UPDATE user_account
+        SET
+        Price = #{price}
+        UpdateTime = NOW()
+        WHERE UserId = #{userId}
+    </update>
 </mapper>
