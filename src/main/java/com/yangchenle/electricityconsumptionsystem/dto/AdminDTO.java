@@ -12,8 +12,6 @@ public class AdminDTO implements Serializable{
 
     private String adminName;
 
-    private String password;
-
     private String adminPhone;
 
     private String idCard;

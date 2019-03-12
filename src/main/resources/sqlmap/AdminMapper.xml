@@ -4,7 +4,6 @@
     <resultMap id="Admin" type="com.yangchenle.electricityconsumptionsystem.entity.AdminEntity">
         <result column="AdminId" property="adminId"/>
         <result column="AdminName" property="adminName"/>
-        <result column="Password" property="password"/>
         <result column="AdminPhone" property="adminPhone"/>
         <result column="IdCard" property="idCard"/>
         <result column="AddTime" property="addTime"/>
@@ -13,7 +12,6 @@
     <sql id="allFile">
         AdminId,
         AdminName,
-        Password,
         AdminPhone,
         IdCard,
         AddTime,

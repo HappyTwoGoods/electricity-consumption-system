@@ -3,7 +3,6 @@
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.ElectricDao">
     <resultMap id="Electric" type="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
         <result column="ElectricId" property="electricId"/>
-        <result column="Price" property="price"/>
         <result column="Type" property="type"/>
         <result column="LastData" property="lastData"/>
         <result column="UserId" property="userId"/>
@@ -13,7 +12,6 @@
     </resultMap>
     <sql id="allFile">
        ElectricId,
-       Price,
        Type,
        LastData,
        UserId,

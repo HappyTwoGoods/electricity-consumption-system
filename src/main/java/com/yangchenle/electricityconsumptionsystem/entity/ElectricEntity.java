@@ -10,8 +10,6 @@ public class ElectricEntity {
 
     private Integer electricId;
 
-    private Double price;
-
     private Integer type;
 
     private Double lastData;

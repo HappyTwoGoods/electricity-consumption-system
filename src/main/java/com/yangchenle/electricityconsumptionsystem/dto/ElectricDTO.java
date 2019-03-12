@@ -11,8 +11,6 @@ public class ElectricDTO implements Serializable {
 
     private Integer electricId;
 
-    private Double price;
-
     private Integer type;
 
     private Double lastData;

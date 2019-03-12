@@ -35,4 +35,19 @@
         NOW()
         )
     </insert>
+
+    <select id="queryById" parameterType="map" resultMap="ReaderTable">
+        SELECT
+        <include refid="allFile"/>
+        FROM reader_account
+        WHERE ReaderId = #{readerId }
+    </select>
+
+    <update id="updateReaderInfo">
+        UPDATE reader_account
+        SET
+        ReaderName = #{readerName},
+        UpdateTime = NOW()
+        WHERE ReaderId = #{readerId}
+    </update>
 </mapper>
