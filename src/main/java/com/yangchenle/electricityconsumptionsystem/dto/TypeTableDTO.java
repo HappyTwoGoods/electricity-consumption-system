@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 public class TypeTableDTO implements Serializable {
 
+    private static final long serialVersionUID = -3587309779254757299L;
     private Integer typeId;
 
     private String typeName;

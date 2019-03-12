@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class AdminDTO implements Serializable{
 
+    private static final long serialVersionUID = 282015869669902872L;
     private Integer adminId;
 
     private String adminName;

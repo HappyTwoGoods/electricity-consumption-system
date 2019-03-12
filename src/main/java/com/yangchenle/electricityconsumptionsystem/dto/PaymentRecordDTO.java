@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 public class PaymentRecordDTO implements Serializable {
 
+    private static final long serialVersionUID = 305308744114805037L;
     private Integer paymentId;
 
     private Integer electricId;
