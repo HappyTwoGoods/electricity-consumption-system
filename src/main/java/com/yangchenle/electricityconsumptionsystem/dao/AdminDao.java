@@ -1,4 +1,5 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
-public class AdminDao {
+public interface AdminDao {
+
 }

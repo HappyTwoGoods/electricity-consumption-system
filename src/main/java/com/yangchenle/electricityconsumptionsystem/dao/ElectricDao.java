@@ -1,4 +1,4 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
-public class ElectricDao {
+public interface ElectricDao {
 }
