@@ -23,7 +23,7 @@
     from admin_account
     where AdminId=#{id}
 </select>
-    <select id="selectByPhone" parameterType="int" resultMap="Admin">
+    <select id="selectByPhone" parameterType="string" resultMap="Admin">
         select
         <include refid="allFile"/>
         from admin_account

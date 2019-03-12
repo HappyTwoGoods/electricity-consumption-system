@@ -19,4 +19,10 @@ public class AdminTest {
         AdminDTO adminDTO = adminService.selectById(1);
         System.out.println(adminDTO);
     }
+
+    @Test
+    public void selectAdminByPhone() {
+        AdminDTO adminDTO = adminService.selectByPhone("13456567878");
+        System.out.println(adminDTO);
+    }
 }

@@ -17,23 +17,31 @@
         UpdateTime
     </sql>
 
-    <insert id="insertCopyRecord" parameterType="map">
+    <insert id="addCopyRecord" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity">
         INSERT INTO
         copy_record(CopyId, ElectricId, CopyData, AddTime, UpdateTime)
         VALUES
         (
-        #{copyId},
-        #{electricId},
-        #{copyData},
+        #{dada.copyId},
+        #{data.electricId},
+        #{data.copyData},
         NOW(),
         NOW()
         )
     </insert>
 
-    <update id="updateCopyRecord">
+    <update id="updateCopyRecord" parameterType="map">
         UPDATE copy_record
         SET
-        CopyData = #{copyData}
-        WHERE CopyId = #{copyId}
+        CopyData = #{data},
+        UpdateTime=now()
+        WHERE CopyId = #{id}
     </update>
+
+    <select id="selectCopyRecordById" parameterType="int" resultMap="CopyRecord">
+        select
+        <include refid="allFile"/>
+        from copy_record
+        where id=#{id}
+    </select>
 </mapper>

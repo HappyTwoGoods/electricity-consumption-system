@@ -7,6 +7,7 @@
         <result column="LastData" property="lastData"/>
         <result column="UserId" property="userId"/>
         <result column="Money" property="money"/>
+        <result column="state" property="state"/>
         <result column="AddTime" property="addTime"/>
         <result column="UpdateTime" property="updateTime"/>
     </resultMap>
@@ -15,7 +16,8 @@
        Type,
        LastData,
        UserId,
-       MOney,
+       Money,
+       state,
        AddTime,
        UpdateTime
     </sql>
@@ -26,5 +28,40 @@
         FROM electric
         WHERE
         UserId = #{userId }
+    </select>
+
+    <insert id="addElectric" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
+        insert into electric
+        (Type,LastData,Money,state,AddTime,UpdateTime) values
+        (#{data.type},#{data.lastData},#{data.moeny},#{data.state},now(),now())
+    </insert>
+
+    <update id="updateElectric" parameterType="map">
+        update electric
+        set
+        <if test="data==null">
+            LastData=#{data},
+        </if>
+        <if test="money==null">
+            Money=#{money},
+        </if>
+        <if test="state==null">
+            state=#{state},
+        </if>
+        UpdateTime=now()
+        where ElectricId=#{id}
+    </update>
+
+    <delete id="deleteElectric" parameterType="int">
+        delete
+        from electric
+        where ElectricId =#{id}
+    </delete>
+
+    <select id="selectElectricById" parameterType="id" resultMap="Electric">
+        select
+        <include refid="allFile"/>
+        from electric
+        where ElectricId=#{id}
     </select>
 </mapper>

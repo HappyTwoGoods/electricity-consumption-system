@@ -12,11 +12,13 @@ public class ElectricEntity {
 
     private Integer type;
 
-    private Double lastData;
+    private BigDecimal lastData;
 
     private Integer userId;
 
     private BigDecimal money;
+
+    private Integer state;
 
     private Date addTime;
 
