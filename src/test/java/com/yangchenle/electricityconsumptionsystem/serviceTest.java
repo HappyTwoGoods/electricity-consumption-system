@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class service {
+public class serviceTest {
 
     @Resource
     private UserDao userDao;

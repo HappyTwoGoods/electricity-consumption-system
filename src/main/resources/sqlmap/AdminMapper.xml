@@ -17,5 +17,16 @@
         AddTime,
         UpdateTime
     </sql>
-
+<select id="selectById" parameterType="int" resultMap="Admin">
+    select
+    <include refid="allFile"/>
+    from admin_account
+    where AdminId=#{id}
+</select>
+    <select id="selectByPhone" parameterType="int" resultMap="Admin">
+        select
+        <include refid="allFile"/>
+        from admin_account
+        where AdminPhone=#{phone}
+    </select>
 </mapper>
