@@ -14,7 +14,7 @@ public interface ElectricDao {
      * @param userId
      * @return
      */
-    List<ElectricEntity> queryEleById(@Param("userId") Integer userId);
+    List<ElectricEntity> queryEleByUserId(@Param("userId") Integer userId);
 
     /**
      * 新增电表
@@ -26,11 +26,13 @@ public interface ElectricDao {
 
     /**
      * 动态修改电表的余额||最后一次抄表数据||电表状态
-     *
      * @param lastData
      * @param money
+     * @param state
+     * @param id
      * @return
      */
+
     int updateElectric(@Param("data") BigDecimal lastData,
                        @Param("money") BigDecimal money,
                        @Param("state") Integer state,

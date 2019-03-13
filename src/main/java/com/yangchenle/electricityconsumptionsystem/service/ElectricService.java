@@ -13,7 +13,7 @@ public interface ElectricService {
      * @param userId
      * @return
      */
-    List<ElectricDTO> queryEleById(Integer userId);
+    List<ElectricDTO> queryEleByUserId(Integer userId);
 
     /**
      * 新增电表

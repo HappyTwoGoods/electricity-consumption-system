@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.TypeTableDao">
+    <resultMap id="typeTalble" type="com.yangchenle.electricityconsumptionsystem.entity.TypeTableEntity">
+        <result column="TypeId" property="typeId"></result>
+        <result column="TypeName" property="typeName"></result>
+        <result column="price" property="price"></result>
+        <result column="AddTime" property="addTime"></result>
+        <result column="UpdateTime" property="updateTime"></result>
+    </resultMap>
+    <sql id="allField">
+        TypeId,
+        TypeName,
+        price,
+        AddTime,
+        UpdateTime
+    </sql>
+</mapper>

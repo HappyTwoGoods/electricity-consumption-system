@@ -21,11 +21,11 @@ public class ElectricServiceImpl implements ElectricService {
     private ElectricDao electricDao;
 
     @Override
-    public List<ElectricDTO> queryEleById(Integer userId) {
+    public List<ElectricDTO> queryEleByUserId(Integer userId) {
         if (userId == null) {
             return null;
         }
-        List<ElectricEntity> electricEntityList = electricDao.queryEleById(userId);
+        List<ElectricEntity> electricEntityList = electricDao.queryEleByUserId(userId);
         return BeansListUtils.copyListProperties(electricEntityList, ElectricDTO.class);
     }
 
