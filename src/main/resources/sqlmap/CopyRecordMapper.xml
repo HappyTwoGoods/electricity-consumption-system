@@ -21,10 +21,11 @@
 
     <insert id="addCopyRecord" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity">
         INSERT INTO
-        copy_record(CopyId, ElectricId, CopyData, AddTime, UpdateTime)
+        copy_record(CopyId, ReaderId,ElectricId, CopyData, AddTime, UpdateTime)
         VALUES
         (
         #{dada.copyId},
+        #{data.readerId}
         #{data.electricId},
         #{data.copyData},
         NOW(),
