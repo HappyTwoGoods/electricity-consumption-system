@@ -26,6 +26,7 @@ public interface ElectricDao {
 
     /**
      * 动态修改电表的余额||最后一次抄表数据||电表状态
+     *
      * @param lastData
      * @param money
      * @param state
@@ -53,4 +54,19 @@ public interface ElectricDao {
      * @return
      */
     ElectricEntity selectElectricById(@Param("id") Integer id);
+
+    /**
+     * 查询所有电表
+     *
+     * @return
+     */
+    List<ElectricEntity> selectElectricAll();
+
+    /**
+     * 根据电表号查询电表
+     *
+     * @param num
+     * @return
+     */
+    ElectricEntity selectElectricByNum(Integer num);
 }

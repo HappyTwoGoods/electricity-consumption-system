@@ -9,9 +9,11 @@ import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
 import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,6 +69,29 @@ public class ElectricServiceImpl implements ElectricService {
             return null;
         }
         ElectricEntity electricEntity = electricDao.selectElectricById(id);
+        if (electricEntity == null) {
+            return null;
+        }
+        ElectricDTO electricDTO = new ElectricDTO();
+        BeanUtils.copyProperties(electricEntity, electricDTO);
+        return electricDTO;
+    }
+
+    @Override
+    public List<ElectricDTO> selectElectricAll() {
+        List<ElectricEntity> electricEntities = electricDao.selectElectricAll();
+        if (CollectionUtils.isEmpty(electricEntities)) {
+            return new ArrayList<>();
+        }
+        return BeansListUtils.copyListProperties(electricEntities, ElectricDTO.class);
+    }
+
+    @Override
+    public ElectricDTO selectElectricByNum(Integer num) {
+        if (num == null || num < 0) {
+            return null;
+        }
+        ElectricEntity electricEntity = electricDao.selectElectricByNum(num);
         if (electricEntity == null) {
             return null;
         }

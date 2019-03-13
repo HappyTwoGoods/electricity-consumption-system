@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.TypeTableDao">
-    <resultMap id="typeTalble" type="com.yangchenle.electricityconsumptionsystem.entity.TypeTableEntity">
+    <resultMap id="typeTable" type="com.yangchenle.electricityconsumptionsystem.entity.TypeTableEntity">
         <result column="TypeId" property="typeId"></result>
         <result column="TypeNum" property="typeNum"></result>
         <result column="price" property="price"></result>
@@ -15,9 +15,23 @@
         AddTime,
         UpdateTime
     </sql>
-    <select id="selectTypeById">
+    <select id="selectTypeByNum" parameterType="int" resultMap="typeTable">
+        select
+        <include refid="allField"/>
+        from type_table
+        where TypeNum = #{num}
+    </select>
+
+    <select id="selectTypeAll" resultMap="typeTable">
         select
         <include refid="allField"/>
         from type_table
     </select>
+
+    <update id="updateTypeTableByNum" parameterType="map">
+        update type_table
+        set price=#{price},
+        UpdateTime=now()
+        where TypeNum = #{num}
+    </update>
 </mapper>

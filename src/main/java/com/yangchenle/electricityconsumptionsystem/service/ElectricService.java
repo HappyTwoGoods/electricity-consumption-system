@@ -52,4 +52,17 @@ public interface ElectricService {
      * @return
      */
     ElectricDTO selectElectricById(Integer id);
+
+    /**
+     * 查询所有的电表
+     * @return
+     */
+    List<ElectricDTO> selectElectricAll();
+
+    /**
+     *根据电表编号查询电表
+     * @param num
+     * @return
+     */
+    ElectricDTO selectElectricByNum(Integer num);
 }

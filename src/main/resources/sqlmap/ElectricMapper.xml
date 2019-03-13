@@ -66,4 +66,17 @@
         from electric
         where ElectricId=#{id}
     </select>
+
+    <select id="selectElectricAll" resultMap="Electric">
+        select
+        <include refid="allFile"/>
+        from electric
+    </select>
+
+    <select id="selectElectricByNum" parameterType="int" resultMap="Electric">
+        select
+        <include refid="allFile"/>
+        from electric
+        where ElectricNum=#{num}
+    </select>
 </mapper>

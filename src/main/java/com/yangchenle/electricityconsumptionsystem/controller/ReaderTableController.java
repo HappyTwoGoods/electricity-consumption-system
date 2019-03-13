@@ -1,14 +1,19 @@
 package com.yangchenle.electricityconsumptionsystem.controller;
 
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
+import com.yangchenle.electricityconsumptionsystem.constant.PhoneNum;
 import com.yangchenle.electricityconsumptionsystem.dto.ReaderAccountDTO;
+import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.RandomCodeService;
 import com.yangchenle.electricityconsumptionsystem.service.ReaderTableService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @RestController
@@ -27,18 +32,18 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/reader/verifyCode")
-    public CommonResult readerVerifyCode(String readerPhone){
+    public CommonResult readerVerifyCode(String readerPhone) {
         String regex = "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$";
         if (StringUtils.isBlank(readerPhone) || !Pattern.matches(regex, readerPhone)) {
-            return CommonResult.fail(403,"参数错误！");
+            return CommonResult.fail(403, "参数错误！");
         }
         ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
-        if (readerAccountDTO.getReaderId() == null){
-            return CommonResult.fail(404,"该抄表员未注册！");
+        if (readerAccountDTO.getReaderId() == null) {
+            return CommonResult.fail(404, "该抄表员未注册！");
         }
         String result = randomCodeService.buildCode();
-        if (StringUtils.isBlank(regex) || result.length() != 6){
-            return CommonResult.fail(500,"获取验证码失败！");
+        if (StringUtils.isBlank(regex) || result.length() != 6) {
+            return CommonResult.fail(500, "获取验证码失败！");
         }
         return CommonResult.success(result);
     }
@@ -51,13 +56,13 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/reader/login")
-    public CommonResult readerlogin(String readerPhone, String code){
-        if (readerPhone == null || code == null){
-            return CommonResult.fail(403,"参数错误！");
+    public CommonResult readerlogin(String readerPhone, String code) {
+        if (readerPhone == null || code == null) {
+            return CommonResult.fail(403, "参数错误！");
         }
         ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
-        if (readerAccountDTO.getReaderId() == null){
-            return CommonResult.fail(404,"该用户未注册！");
+        if (readerAccountDTO.getReaderId() == null) {
+            return CommonResult.fail(404, "该用户未注册！");
         }
         return CommonResult.success();
     }
@@ -68,11 +73,11 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/raeder/query/readerId")
-    public CommonResult queryById(){
+    public CommonResult queryById() {
         Integer reaedrId = 1;
         ReaderAccountDTO readerAccountDTO = readerTableService.queryById(reaedrId);
-        if (readerAccountDTO.getReaderId() == null){
-            return CommonResult.fail(404,"没有该用户信息！");
+        if (readerAccountDTO.getReaderId() == null) {
+            return CommonResult.fail(404, "没有该用户信息！");
         }
         return CommonResult.success(readerAccountDTO);
     }
@@ -84,15 +89,68 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/update/readerInfo")
-    public CommonResult updateById(String readerName){
-        if (readerName == null){
-            return CommonResult.fail(403,"参数错误！");
+    public CommonResult updateById(String readerName) {
+        if (readerName == null) {
+            return CommonResult.fail(403, "参数错误！");
         }
         Integer readerId = 1;
-        int result = readerTableService.updateReaderInfo(readerName,readerId);
-        if (result <= 0){
-            return CommonResult.fail(500,"信息修改失败！");
+        int result = readerTableService.updateReaderInfo(readerName, readerId);
+        if (result <= 0) {
+            return CommonResult.fail(500, "信息修改失败！");
         }
         return CommonResult.success();
     }
+
+    @PostMapping("/manager/addReader")
+    public CommonResult addReader(String name, String phone) {
+        if (name == null || name.length() < 1 || phone == null || phone.length() != PhoneNum.LENGTH) {
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+        ReaderAccountDTO readerAccountDTO = new ReaderAccountDTO();
+        readerAccountDTO.setReaderName(name);
+        readerAccountDTO.setReaderPhone(phone);
+        int addNum = readerTableService.insertReader(readerAccountDTO);
+        if (addNum < 1) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
+        return CommonResult.success("新增成功");
+    }
+
+    @GetMapping("/manager/select/readerAll")
+    public CommonResult selectAllReader() {
+        List<ReaderAccountDTO> readerAccountDTOS = readerTableService.selectReaderAll();
+        if (CollectionUtils.isEmpty(readerAccountDTOS)) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        return CommonResult.success(readerAccountDTOS);
+    }
+
+    @GetMapping("/manager/select/readerOne")
+    public CommonResult selectReaderById(Integer id) {
+        if (id == null || id < 1) {
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+        ReaderAccountDTO readerAccountDTO = readerTableService.queryById(id);
+        if (readerAccountDTO == null) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        return CommonResult.success(readerAccountDTO);
+    }
+
+    @GetMapping("/manager/delete/reader")
+    public CommonResult deleteReader(Integer id) {
+        if (id == null || id < 1) {
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+        ReaderAccountDTO readerAccountDTO = readerTableService.queryById(id);
+        if (readerAccountDTO == null) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        int deleteNum = readerTableService.deleteById(id);
+        if (deleteNum < 1) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
+        return CommonResult.success();
+    }
+
 }
