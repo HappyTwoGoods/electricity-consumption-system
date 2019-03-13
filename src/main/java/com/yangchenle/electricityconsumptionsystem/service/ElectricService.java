@@ -8,7 +8,7 @@ import java.util.List;
 public interface ElectricService {
 
     /**
-     * 根据用户id查询用户用电信息
+     * 根据用户id查询用户用电列表
      *
      * @param userId
      * @return

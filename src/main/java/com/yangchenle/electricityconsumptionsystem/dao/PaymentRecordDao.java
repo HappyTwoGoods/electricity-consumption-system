@@ -22,14 +22,14 @@ public interface PaymentRecordDao {
     /**
      * 缴费操作
      *
-     * @param paymentMethd
+     * @param paymentMethod
      * @param money
      * @param paymentState
      * @param electricId
      * @return
      */
-    int updatePayment(@Param("paymentMethod") Integer paymentMethd,
+    int updatePayment(@Param("paymentMethod") Integer paymentMethod,
                       @Param("money")BigDecimal money,
-                      @Param("PaymentState") Integer paymentState,
+                      @Param("paymentState") Integer paymentState,
                       @Param("electricId") Integer electricId);
 }

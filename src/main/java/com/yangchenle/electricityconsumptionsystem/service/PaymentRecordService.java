@@ -20,14 +20,14 @@ public interface PaymentRecordService {
     /**
      * 缴费操作
      *
-     * @param paymentMethd
+     * @param paymentMethod
      * @param money
      * @param paymentState
      * @param electricId
      * @return
      */
-    int updatePayment(@Param("paymentMethod") Integer paymentMethd,
-                      @Param("money")BigDecimal money,
-                      @Param("PaymentState") Integer paymentState,
-                      @Param("electricId") Integer electricId);
+    int updatePayment(Integer paymentMethod,
+                      BigDecimal money,
+                      Integer paymentState,
+                      Integer electricId);
 }

@@ -5,6 +5,7 @@ import com.yangchenle.electricityconsumptionsystem.constant.BossAccount;
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
 import com.yangchenle.electricityconsumptionsystem.service.PaymentRecordService;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
@@ -64,13 +65,26 @@ public class PaymentRecordController {
     @GetMapping("/user/payMoney")
     public CommonResult payMoney(Integer paymentMethod, BigDecimal money,
                                  Integer electricId){
+        Integer userId = 1;
         if (paymentMethod == null || electricId == null){
             return CommonResult.fail(403,"参数错误！");
         }
-        int result = paymentRecordService.updatePayment(paymentMethod,new BigDecimal(0),PaymentState.PAID,electricId);
+        UserDTO userDTO = userService.queryById(userId);
+        BigDecimal price = userDTO.getPrice();
+        if (price.compareTo(money) < 0 ){
+            return CommonResult.fail(500,"余额不足！");
+        }
+        int userPayResult = userService.payById(price.multiply(money),userId);
+        if (userPayResult <= 0){
+            return CommonResult.fail(500,"支付失败！");
+        }
         int payResult = userService.payById(money, 1);
-        if (result <= 0 && payResult <= 0){
-            return CommonResult.fail("缴费失败！");
+        if (payResult <= 0){
+            return CommonResult.fail(500,"转账失败！");
+        }
+        int result = paymentRecordService.updatePayment(paymentMethod,new BigDecimal(0),PaymentState.PAID,electricId);
+        if (result <= 0){
+            return CommonResult.fail(500,"缴费失败！");
         }
         return CommonResult.success();
     }

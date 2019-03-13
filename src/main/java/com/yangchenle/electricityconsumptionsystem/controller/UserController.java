@@ -46,9 +46,16 @@ public class UserController {
         return CommonResult.success(result);
     }
 
+    /**
+     * 用户登录
+     *
+     * @param userPhone
+     * @param code
+     * @return
+     */
     @GetMapping("/user/login")
     public CommonResult userLogin(String userPhone, String code){
-        if (userPhone == null){
+        if (userPhone == null || code == null){
             return CommonResult.fail(403, "参数错误！");
         }
         UserDTO userDTO = userService.userLogin(userPhone);
@@ -58,6 +65,17 @@ public class UserController {
         return CommonResult.success();
     }
 
+    /**
+     * 用户注册
+     *
+     * @param userName
+     * @param userPhone
+     * @param userAccount
+     * @param userAddress
+     * @param idCard
+     * @param price
+     * @return
+     */
     @PostMapping("/user/register")
     public CommonResult userRegister(String userName, String userPhone, Integer userAccount,
                                      String userAddress, String idCard, BigDecimal price){
@@ -78,6 +96,11 @@ public class UserController {
         return CommonResult.success();
     }
 
+    /**
+     * 用户查看个人信息
+     *
+     * @return
+     */
     @GetMapping("/user/query/userId")
     public CommonResult queryById(){
         Integer userId = 1;
@@ -88,6 +111,14 @@ public class UserController {
         return CommonResult.success();
     }
 
+    /**
+     * 用户修改个人信息
+     *
+     * @param userName
+     * @param userAccount
+     * @param userAddress
+     * @return
+     */
     @GetMapping("/user/update/userInfo")
     public CommonResult updateUserInfo(@RequestParam(required = false, defaultValue = "")String userName,
                                        @RequestParam(required = false, defaultValue = "")Integer userAccount,
