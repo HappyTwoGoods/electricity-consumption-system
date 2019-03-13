@@ -16,10 +16,15 @@ public class ElectricController {
     @Resource
     private ElectricService electricService;
 
+    /**
+     * 查看用电信息
+     *
+     * @return
+     */
     @GetMapping("/user/queryElectric/userId")
     public CommonResult queryByUserId(){
         Integer userId = 1;
-        List<ElectricDTO> electricDTOList = electricService.queryEleById(userId);
+        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
         if (CollectionUtils.isEmpty(electricDTOList)){
             return CommonResult.fail(404,"没有该用户相关记录！");
         }

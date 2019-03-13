@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,5 +54,13 @@ public class UserServiceImpl implements UserService {
             return 0;
         }
         return userDao.updateUserInfo(userName,userAccount,userAddress,userId);
+    }
+
+    @Override
+    public int payById(BigDecimal money,Integer userId) {
+        if (userId == null){
+            return 0;
+        }
+        return userDao.payById(money,userId);
     }
 }
