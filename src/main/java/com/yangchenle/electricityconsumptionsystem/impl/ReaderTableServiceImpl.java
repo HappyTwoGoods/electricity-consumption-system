@@ -4,11 +4,12 @@ import com.yangchenle.electricityconsumptionsystem.dao.ReaderTableDao;
 import com.yangchenle.electricityconsumptionsystem.dto.ReaderAccountDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity;
 import com.yangchenle.electricityconsumptionsystem.service.ReaderTableService;
-import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+@Service
 public class ReaderTableServiceImpl implements ReaderTableService {
 
     @Resource

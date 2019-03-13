@@ -39,7 +39,7 @@ public interface UserDao {
      * @return
      */
     int updateUserInfo(@Param("userName") String userName,
-                  @Param("userAccount") String userAccount,
+                  @Param("userAccount") Integer userAccount,
                   @Param("userAddress") String userAddress,
                   @Param("userId") Integer userId
                   );

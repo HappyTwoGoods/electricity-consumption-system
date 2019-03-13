@@ -35,7 +35,7 @@
 
     <insert id="insertUser" parameterType="map" useGeneratedKeys="true" keyProperty="userInfo.userId">
         INSERT INTO
-        user_account(UserId, UserName, UserPhone, UserAccount, UserAddress, AddTime, UpdateTime, IdCard)
+        user_account(UserId, UserName, UserPhone, UserAccount, UserAddress, AddTime, UpdateTime, IdCard, price)
         VALUES (
         #{userInfo.userId },
         #{userInfo.userName },
@@ -44,7 +44,8 @@
         #{userInfo.userAddress },
         NOW(),
         NOW(),
-        #{userInfo.idCard }
+        #{userInfo.idCard },
+        #{userInfo.price }
         )
     </insert>
 

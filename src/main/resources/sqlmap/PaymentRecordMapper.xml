@@ -21,4 +21,23 @@
         UpdateTime
     </sql>
 
+    <select id="queryPayment" parameterType="map" resultMap="PaymentRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM payment_record
+        WHERE ElectricId = #{electricId }
+        AND PaymentState = #{paymentState }
+    </select>
+
+    <update id="updatePayment" parameterType="map">
+        UPDATE payment_record
+        SET
+        PaymentMethod = #{paymentMethod },
+        Money = #{money },
+        PaymentState = #{paymentState },
+        UpdateTime = NOW()
+        WHERE
+        ElectricId = #{electricId }
+    </update>
+
 </mapper>

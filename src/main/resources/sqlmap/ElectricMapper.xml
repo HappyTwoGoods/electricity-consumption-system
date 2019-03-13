@@ -58,7 +58,7 @@
         where ElectricId =#{id}
     </delete>
 
-    <select id="selectElectricById" parameterType="id" resultMap="Electric">
+    <select id="selectElectricById" parameterType="int" resultMap="Electric">
         select
         <include refid="allFile"/>
         from electric

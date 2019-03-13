@@ -37,5 +37,5 @@ public interface UserService {
      * @param userId
      * @return
      */
-    int updateUserInfo(String userName, String userAccount, String userAddress, Integer userId);
+    int updateUserInfo(String userName, Integer userAccount, String userAddress, Integer userId);
 }

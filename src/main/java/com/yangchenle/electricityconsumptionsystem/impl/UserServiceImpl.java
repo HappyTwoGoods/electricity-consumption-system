@@ -5,9 +5,11 @@ import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.UserEntity;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Resource
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUserInfo(String userName, String userAccount, String userAddress, Integer userId) {
+    public int updateUserInfo(String userName, Integer userAccount, String userAddress, Integer userId) {
         if (userId == null){
             return 0;
         }
