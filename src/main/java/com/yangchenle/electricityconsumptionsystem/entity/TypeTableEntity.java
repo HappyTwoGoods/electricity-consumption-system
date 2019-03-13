@@ -10,7 +10,7 @@ public class TypeTableEntity {
 
     private Integer typeId;
 
-    private String typeName;
+    private String typeNum;
 
     private BigDecimal price;
 
