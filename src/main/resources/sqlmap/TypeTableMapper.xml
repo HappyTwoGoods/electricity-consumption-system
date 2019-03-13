@@ -3,17 +3,21 @@
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.TypeTableDao">
     <resultMap id="typeTalble" type="com.yangchenle.electricityconsumptionsystem.entity.TypeTableEntity">
         <result column="TypeId" property="typeId"></result>
-        <result column="TypeName" property="typeName"></result>
+        <result column="TypeNum" property="typeNum"></result>
         <result column="price" property="price"></result>
         <result column="AddTime" property="addTime"></result>
         <result column="UpdateTime" property="updateTime"></result>
     </resultMap>
     <sql id="allField">
         TypeId,
-        TypeName,
+        TypeNum,
         price,
         AddTime,
         UpdateTime
     </sql>
-
+    <select id="selectTypeById">
+        select
+        <include refid="allField"/>
+        from type_table
+    </select>
 </mapper>
