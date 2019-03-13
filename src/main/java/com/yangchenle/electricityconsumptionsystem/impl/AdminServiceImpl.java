@@ -5,6 +5,7 @@ import com.yangchenle.electricityconsumptionsystem.dto.AdminDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.AdminEntity;
 import com.yangchenle.electricityconsumptionsystem.service.AdminService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

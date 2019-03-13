@@ -3,6 +3,7 @@
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.ElectricDao">
     <resultMap id="Electric" type="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
         <result column="ElectricId" property="electricId"/>
+        <result column="ElectricNum" property="num"/>
         <result column="Type" property="type"/>
         <result column="LastData" property="lastData"/>
         <result column="UserId" property="userId"/>
@@ -13,6 +14,7 @@
     </resultMap>
     <sql id="allFile">
        ElectricId,
+       ElectricNum,
        Type,
        LastData,
        UserId,
@@ -22,7 +24,7 @@
        UpdateTime
     </sql>
 
-    <select id="queryEleById" parameterType="map" resultMap="Electric">
+    <select id="queryEleByUserId" parameterType="map" resultMap="Electric">
         SELECT
         <include refid="allFile"/>
         FROM electric
@@ -32,27 +34,27 @@
 
     <insert id="addElectric" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
         insert into electric
-        (Type,LastData,Money,state,AddTime,UpdateTime) values
-        (#{data.type},#{data.lastData},#{data.moeny},#{data.state},now(),now())
+        (ElectricNum,Type,LastData,Money,state,AddTime,UpdateTime) values
+        (#{data.num},#{data.type},#{data.lastData},#{data.money},#{data.state},now(),now())
     </insert>
 
     <update id="updateElectric" parameterType="map">
         update electric
         set
-        <if test="data==null">
+        <if test="data!=null">
             LastData=#{data},
         </if>
-        <if test="money==null">
+        <if test="money!=null">
             Money=#{money},
         </if>
-        <if test="state==null">
+        <if test="state!=null">
             state=#{state},
         </if>
         UpdateTime=now()
         where ElectricId=#{id}
     </update>
 
-    <delete id="deleteElectric" parameterType="int">
+    <delete id="deleteElectricById" parameterType="int">
         delete
         from electric
         where ElectricId =#{id}

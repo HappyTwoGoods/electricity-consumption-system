@@ -8,14 +8,17 @@ import java.math.BigDecimal;
 public interface CopyRecordDao {
     /**
      * 新增抄表记录
+     *
      * @param copyRecordEntity
      * @return
      */
-    int addCopyRecord (@Param("data") CopyRecordEntity copyRecordEntity);
+    int addCopyRecord(@Param("data") CopyRecordEntity copyRecordEntity);
 
     /**
      * 修改抄表数据
+     *
      * @param data
+     * @param id
      * @return
      */
     int updateCopyRecord(@Param("data") BigDecimal data,
@@ -23,6 +26,7 @@ public interface CopyRecordDao {
 
     /**
      * 根据id查询用抄表记录
+     *
      * @param id
      * @return
      */

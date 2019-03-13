@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.CopyRecordDao">
-    <resultMap id="CopyRecord" type="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
+    <resultMap id="CopyRecord" type="com.yangchenle.electricityconsumptionsystem.entity.CopyRecordEntity">
         <result column="CopyId" property="copyId"/>
         <result column="ReaderId" property="readerId"/>
         <result column="ElectricId" property="electricId"/>
@@ -21,10 +21,10 @@
 
     <insert id="addCopyRecord" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity">
         INSERT INTO
-        copy_record(CopyId, ElectricId, CopyData, AddTime, UpdateTime)
+        copy_record(ReaderId,ElectricId, CopyData, AddTime, UpdateTime)
         VALUES
         (
-        #{dada.copyId},
+        #{data.readerId},
         #{data.electricId},
         #{data.copyData},
         NOW(),
@@ -44,6 +44,6 @@
         select
         <include refid="allFile"/>
         from copy_record
-        where id=#{id}
+        where CopyId = #{id}
     </select>
 </mapper>
