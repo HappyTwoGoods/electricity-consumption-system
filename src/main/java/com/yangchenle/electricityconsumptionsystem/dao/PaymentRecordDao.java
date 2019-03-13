@@ -1,6 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
 import com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity;
+import com.yangchenle.electricityconsumptionsystem.entity.PaymentRecordEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -15,8 +16,8 @@ public interface PaymentRecordDao {
      * @param paymentState
      * @return
      */
-    List<ElectricEntity> queryPayment(@Param("electricId") Integer electricId,
-                                      @Param("paymentState") Integer paymentState);
+    List<PaymentRecordEntity> queryPayment(@Param("electricId") Integer electricId,
+                                           @Param("paymentState") Integer paymentState);
 
     /**
      * 缴费操作

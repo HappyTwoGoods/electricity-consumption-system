@@ -77,7 +77,7 @@
     <update id="payById">
         UPDATE user_account
         SET
-        Price = #{price}
+        Price = #{money },
         UpdateTime = NOW()
         WHERE UserId = #{userId}
     </update>

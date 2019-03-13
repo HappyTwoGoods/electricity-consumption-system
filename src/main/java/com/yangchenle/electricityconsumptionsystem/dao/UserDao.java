@@ -3,6 +3,8 @@ package com.yangchenle.electricityconsumptionsystem.dao;
 import com.yangchenle.electricityconsumptionsystem.entity.UserEntity;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
+
 public interface UserDao {
 
     /**
@@ -43,5 +45,14 @@ public interface UserDao {
                   @Param("userAddress") String userAddress,
                   @Param("userId") Integer userId
                   );
+
+    /**
+     * 支付
+     *
+     * @param money
+     * @param userId
+     * @return
+     */
+    int payById(@Param("money") BigDecimal money,@Param("userId") Integer userId);
 
 }

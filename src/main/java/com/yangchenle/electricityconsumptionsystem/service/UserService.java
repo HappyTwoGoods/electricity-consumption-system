@@ -2,6 +2,8 @@ package com.yangchenle.electricityconsumptionsystem.service;
 
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 
+import java.math.BigDecimal;
+
 public interface UserService {
 
     /**
@@ -38,4 +40,13 @@ public interface UserService {
      * @return
      */
     int updateUserInfo(String userName, Integer userAccount, String userAddress, Integer userId);
+
+    /**
+     * 支付
+     *
+     * @param money
+     * @param userId
+     * @return
+     */
+    int payById(BigDecimal money,Integer userId);
 }
