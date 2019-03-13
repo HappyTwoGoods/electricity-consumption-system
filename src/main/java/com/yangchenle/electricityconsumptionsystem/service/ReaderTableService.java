@@ -2,6 +2,9 @@ package com.yangchenle.electricityconsumptionsystem.service;
 
 import com.sun.org.apache.regexp.internal.RE;
 import com.yangchenle.electricityconsumptionsystem.dto.ReaderAccountDTO;
+import com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity;
+
+import java.util.List;
 
 public interface ReaderTableService {
 
@@ -37,4 +40,17 @@ public interface ReaderTableService {
      * @return
      */
     int updateReaderInfo(String readerName, Integer readerId);
+
+    /**
+     * 查询所有的抄表员
+     * @return
+     */
+    List<ReaderAccountDTO> selectReaderAll();
+
+    /**
+     * 根据id删除抄表员
+     * @param id
+     * @return
+     */
+    int deleteById(Integer id);
 }

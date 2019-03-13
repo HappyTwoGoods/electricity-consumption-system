@@ -4,6 +4,8 @@ import com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity;
 import lombok.Data;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface ReaderTableDao {
 
     /**
@@ -40,5 +42,16 @@ public interface ReaderTableDao {
     int updateReaderInfo(@Param("readerName")String readerName,
                          @Param("readerId")Integer readerId);
 
+    /**
+     * 查询所有的抄表员
+     * @return
+     */
+    List<ReaderAccountEntity> selectReaderAll();
 
+    /**
+     * 根据id删除抄表员
+     * @param id
+     * @return
+     */
+    int deleteById(@Param("id") Integer id);
 }

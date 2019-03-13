@@ -26,9 +26,8 @@
 
     <insert id="insertReader" parameterType="map" useGeneratedKeys="true" keyProperty="readerInfo.readerId">
         INSERT INTO
-        reader_account(ReaderId, ReaderName, ReaderPhone, AddTime, UpdateTime)
+        reader_account(ReaderName, ReaderPhone, AddTime, UpdateTime)
         VALUES (
-        #{readerInfo.readerId },
         #{readerInfo.readerName },
         #{readerInfo.readerPhone },
         NOW(),
@@ -50,4 +49,16 @@
         UpdateTime = NOW()
         WHERE ReaderId = #{readerId}
     </update>
+
+    <select id="selectReaderAll" resultMap="ReaderTable">
+        SELECT
+        <include refid="allFile"/>
+        FROM reader_account
+    </select>
+
+    <delete id="deleteById" parameterType="int">
+        delete
+        FROM reader_account
+        WHERE ReaderId = #{id}
+    </delete>
 </mapper>
