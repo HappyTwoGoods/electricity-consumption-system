@@ -3,6 +3,7 @@
 <mapper namespace="com.yangchenle.electricityconsumptionsystem.dao.CopyRecordDao">
     <resultMap id="CopyRecord" type="com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity">
         <result column="CopyId" property="copyId"/>
+        <result column="ReaderId" property="readerId"/>
         <result column="ElectricId" property="electricId"/>
         <result column="CopyData" property="copyData"/>
         <result column="AddTime" property="addTime"/>
@@ -11,6 +12,7 @@
 
     <sql id="allFile">
         CopyId,
+        ReaderId,
         ElectricId,
         CopyData,
         AddTime,

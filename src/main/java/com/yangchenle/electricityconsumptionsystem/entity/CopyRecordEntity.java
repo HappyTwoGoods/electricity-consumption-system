@@ -10,6 +10,8 @@ public class CopyRecordEntity {
 
     private Integer copyId;
 
+    private Integer readerId;
+
     private Integer electricId;
 
     private BigDecimal copyData;
