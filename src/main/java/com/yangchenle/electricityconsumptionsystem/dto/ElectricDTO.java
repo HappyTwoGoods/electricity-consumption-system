@@ -12,6 +12,8 @@ public class ElectricDTO implements Serializable {
     private static final long serialVersionUID = 912846626837657014L;
     private Integer electricId;
 
+    private Integer num;
+
     private Integer type;
 
     private BigDecimal lastData;

@@ -17,12 +17,12 @@ public interface ElectricService {
 
     /**
      * 新增电表
-     *
+     * @param num
      * @param type
      * @param data
      * @return
      */
-    int addElectric(Integer type, BigDecimal data);
+    int addElectric(Integer num, Integer type, BigDecimal data);
 
     /**
      * 动态修改电表的余额||最后一次抄表数据||电表状态

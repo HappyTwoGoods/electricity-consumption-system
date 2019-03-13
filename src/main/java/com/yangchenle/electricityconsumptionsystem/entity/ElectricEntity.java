@@ -10,6 +10,8 @@ public class ElectricEntity {
 
     private Integer electricId;
 
+    private Integer num;
+
     private Integer type;
 
     private BigDecimal lastData;
