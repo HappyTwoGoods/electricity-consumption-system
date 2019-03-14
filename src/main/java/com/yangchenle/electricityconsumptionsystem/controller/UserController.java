@@ -108,7 +108,7 @@ public class UserController {
         if (userDTO.getUserId() == null){
             return CommonResult.fail(404,"没有查到该用户！");
         }
-        return CommonResult.success();
+        return CommonResult.success(userDTO);
     }
 
     /**
