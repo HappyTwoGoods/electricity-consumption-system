@@ -2,6 +2,7 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.PhoneNum;
+import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.ReaderAccountDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.RandomCodeService;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -32,7 +35,8 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/reader/verifyCode")
-    public CommonResult readerVerifyCode(String readerPhone) {
+    public CommonResult readerVerifyCode(String readerPhone, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         String regex = "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$";
         if (StringUtils.isBlank(readerPhone) || !Pattern.matches(regex, readerPhone)) {
             return CommonResult.fail(403, "参数错误！");
@@ -45,6 +49,9 @@ public class ReaderTableController {
         if (StringUtils.isBlank(regex) || result.length() != 6) {
             return CommonResult.fail(500, "获取验证码失败！");
         }
+        session.setAttribute(SessionParameters.PHONE, readerPhone);
+        session.setAttribute(SessionParameters.PASSNUM, result);
+        session.setAttribute(SessionParameters.READERID,readerAccountDTO.getReaderId());
         return CommonResult.success(result);
     }
 
@@ -56,15 +63,23 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/reader/login")
-    public CommonResult readerlogin(String readerPhone, String code) {
+    public CommonResult readerLogin(String readerPhone, String code, HttpServletRequest request) {
         if (readerPhone == null || code == null) {
             return CommonResult.fail(403, "参数错误！");
         }
-        ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
-        if (readerAccountDTO.getReaderId() == null) {
-            return CommonResult.fail(404, "该用户未注册！");
+        HttpSession session = request.getSession();
+        String phone = (String) session.getAttribute(SessionParameters.PHONE);
+        String passNum = (String) session.getAttribute(SessionParameters.PASSNUM);
+        if (phone.equals(readerPhone) && code.equals(passNum)) {
+            session.setAttribute(SessionParameters.PASSNUM,"");
+            return CommonResult.success();
         }
-        return CommonResult.success();
+        return CommonResult.fail(404,"登录失败");
+//        ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
+//        if (readerAccountDTO.getReaderId() == null) {
+//            return CommonResult.fail(404, "该用户未注册！");
+//        }
+
     }
 
     /**
@@ -73,8 +88,10 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/raeder/query/readerId")
-    public CommonResult queryById() {
-        Integer reaedrId = 1;
+    public CommonResult queryById(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Integer reaedrId = (Integer) session.getAttribute(SessionParameters.READERID);
+//        Integer reaedrId = 1;
         ReaderAccountDTO readerAccountDTO = readerTableService.queryById(reaedrId);
         if (readerAccountDTO.getReaderId() == null) {
             return CommonResult.fail(404, "没有该用户信息！");
@@ -89,11 +106,13 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/update/readerInfo")
-    public CommonResult updateById(String readerName) {
+    public CommonResult updateById(String readerName,HttpServletRequest request) {
         if (readerName == null) {
             return CommonResult.fail(403, "参数错误！");
         }
-        Integer readerId = 1;
+        HttpSession session = request.getSession();
+        Integer readerId = (Integer) session.getAttribute(SessionParameters.READERID);
+//        Integer readerId = 1;
         int result = readerTableService.updateReaderInfo(readerName, readerId);
         if (result <= 0) {
             return CommonResult.fail(500, "信息修改失败！");
