@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StopEleltric {
+
     @Resource
     private ElectricDao electricDao;
     @Scheduled(cron = "")

@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 电表信息
+ */
 public interface ElectricDao {
 
     /**

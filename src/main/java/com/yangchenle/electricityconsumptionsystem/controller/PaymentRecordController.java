@@ -43,13 +43,13 @@ public class PaymentRecordController {
         if (CollectionUtils.isEmpty(electricDTOList)){
             return CommonResult.fail(404,"没有该用户电表记录");
         }
-        Map<Integer,List<PaymentRecordDTO>> paymentMap = new HashMap<>();
+        Map<String,List<PaymentRecordDTO>> paymentMap = new HashMap<>();
         for (ElectricDTO electric: electricDTOList) {
             List<PaymentRecordDTO> paymentRecordDTOS = paymentRecordService.queryPayment(electric.getElectricId(), PaymentState.UNPAID);
             if (CollectionUtils.isEmpty(paymentRecordDTOS)){
-                return CommonResult.success("用户没有未缴费记录！");
+                continue;
             }
-            paymentMap.put(electric.getElectricId(),paymentRecordDTOS);
+            paymentMap.put("paymentInfo",paymentRecordDTOS);
         }
         return CommonResult.success(paymentMap);
     }

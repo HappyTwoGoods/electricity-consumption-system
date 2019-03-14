@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 电类型操作
+ */
 public interface TypeTableDao {
     /**
      * 根据类型编号查找类型
