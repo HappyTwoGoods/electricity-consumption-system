@@ -3,6 +3,9 @@ package com.yangchenle.electricityconsumptionsystem.dao;
 import com.yangchenle.electricityconsumptionsystem.entity.AdminEntity;
 import org.apache.ibatis.annotations.Param;
 
+/**
+ * 管理员信息
+ */
 public interface AdminDao {
     /**
      * 通过id查询管理员

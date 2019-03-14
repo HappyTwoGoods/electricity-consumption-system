@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 public class AdminController {
     @Resource
     private AdminService adminService;
+
     @PostMapping("/manager/login")
     public CommonResult selectAdminByPhone(String phone, HttpServletRequest request){
         HttpSession session = request.getSession();

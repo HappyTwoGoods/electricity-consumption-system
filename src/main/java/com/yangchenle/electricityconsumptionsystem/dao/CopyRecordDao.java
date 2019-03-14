@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 
+/**
+ * 抄表员信息
+ */
 public interface CopyRecordDao {
     /**
      * 新增抄表记录

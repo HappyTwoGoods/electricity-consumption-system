@@ -5,6 +5,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 
+/**
+ * 用户信息
+ */
 public interface UserDao {
 
     /**

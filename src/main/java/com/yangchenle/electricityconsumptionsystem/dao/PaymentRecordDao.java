@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 缴费记录
+ */
 public interface PaymentRecordDao {
 
     /**

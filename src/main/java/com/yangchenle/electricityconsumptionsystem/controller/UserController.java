@@ -65,10 +65,10 @@ public class UserController {
         if (userPhone == null || code == null) {
             return CommonResult.fail(403, "参数错误！");
         }
-//        UserDTO userDTO = userService.userLogin(userPhone);
-//        if (userDTO.getUserId() == null){
-//            return CommonResult.fail(404,"没有该用户信息！");
-//        }
+        UserDTO userDTO = userService.userLogin(userPhone);
+        if (userDTO.getUserId() == null){
+            return CommonResult.fail(404,"没有该用户信息！");
+        }
         HttpSession session = request.getSession();
         String phone = (String) session.getAttribute(SessionParameters.PHONE);
         String passNum = (String) session.getAttribute(SessionParameters.PASSNUM);
