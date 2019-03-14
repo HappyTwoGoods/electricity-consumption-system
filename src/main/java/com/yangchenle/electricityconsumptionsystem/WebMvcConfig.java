@@ -22,6 +22,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(managerInterceptor).addPathPatterns("/manager/**")
+                .excludePathPatterns("/manager/verifyCode")
                 .excludePathPatterns("/manager/login");
         registry.addInterceptor(readerInterceptor).addPathPatterns("/reader/**")
                 .excludePathPatterns("/reader/login")

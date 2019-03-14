@@ -72,8 +72,8 @@ public class UserController {
         HttpSession session = request.getSession();
         String phone = (String) session.getAttribute(SessionParameters.PHONE);
         String passNum = (String) session.getAttribute(SessionParameters.PASSNUM);
-        session.setAttribute(SessionParameters.PASSNUM,"");
         if (userPhone.equals(phone) && passNum.equals(code)) {
+            session.setAttribute(SessionParameters.PASSNUM,"");
             return CommonResult.success();
         }
         return CommonResult.fail(404, "没有该用户信息！");
