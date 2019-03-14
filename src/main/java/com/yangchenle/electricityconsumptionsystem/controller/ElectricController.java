@@ -3,8 +3,12 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.ElectricType;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
+import com.yangchenle.electricityconsumptionsystem.service.UserService;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,6 +25,8 @@ public class ElectricController {
 
     @Resource
     private ElectricService electricService;
+    @Resource
+    private UserService userService;
 
     /**
      * 查看用电信息
@@ -26,11 +34,11 @@ public class ElectricController {
      * @return
      */
     @GetMapping("/user/queryElectric/userId")
-    public CommonResult queryByUserId(){
+    public CommonResult queryByUserId() {
         Integer userId = 1;
         List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
-        if (CollectionUtils.isEmpty(electricDTOList)){
-            return CommonResult.fail(404,"没有该用户相关记录！");
+        if (CollectionUtils.isEmpty(electricDTOList)) {
+            return CommonResult.fail(404, "没有该用户相关记录！");
         }
         return CommonResult.success(electricDTOList);
     }
@@ -60,7 +68,7 @@ public class ElectricController {
         if (electricDTO == null) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(electricDTO);
+        return CommonResult.success(reElectricData(electricDTO));
     }
 
     @GetMapping("/manager/select/electricAll")
@@ -69,7 +77,11 @@ public class ElectricController {
         if (CollectionUtils.isEmpty(electricDTOS)) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(electricDTOS);
+        ArrayList<reElectric> reElectrics = new ArrayList<>();
+        for (ElectricDTO electricDTO : electricDTOS) {
+            reElectrics.add(reElectricData(electricDTO));
+        }
+        return CommonResult.success(reElectrics);
     }
 
     @GetMapping("/manager/delete/electric")
@@ -86,5 +98,42 @@ public class ElectricController {
             return CommonResult.fail(HttpStatus.ERROR);
         }
         return CommonResult.success("删除成功");
+    }
+
+    private reElectric reElectricData(ElectricDTO electricDTO) {
+        if (electricDTO == null) {
+            return null;
+        }
+        reElectric reElectric = new reElectric();
+        BeanUtils.copyProperties(electricDTO, reElectric);
+        if (electricDTO.getUserId() != null) {
+            UserDTO userDTO = userService.queryById(electricDTO.getUserId());
+            reElectric.setUsername(userDTO.getUserName());
+        } else {
+            reElectric.setUsername("暂无绑定");
+        }
+        return reElectric;
+    }
+
+    @Data
+    private class reElectric {
+
+        private Integer electricId;
+
+        private Integer num;
+
+        private Integer type;
+
+        private BigDecimal lastData;
+
+        private String username;
+
+        private BigDecimal money;
+
+        private Integer state;
+
+        private Date addTime;
+
+        private Date updateTime;
     }
 }

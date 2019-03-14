@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,8 +27,10 @@ public class ElectricTest {
 
     @Test
     public void addElectricTest() {
-        int i = electricService.addElectric(121312, ElectricType.HOEM, BigDecimal.valueOf(44.5));
-        System.out.println(i);
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            electricService.addElectric(10000+random.nextInt(10000), random.nextInt(2)+1, BigDecimal.valueOf(random.nextFloat()+random.nextInt(1000)));
+        }
     }
 
     @Test
