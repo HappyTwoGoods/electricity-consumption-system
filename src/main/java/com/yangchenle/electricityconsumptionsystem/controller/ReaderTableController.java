@@ -78,6 +78,7 @@ public class ReaderTableController {
             ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
             session.setAttribute(SessionParameters.PHONE, readerPhone);
             session.setAttribute(SessionParameters.READERID, readerAccountDTO.getReaderId());
+            session.setAttribute(readerPhone,"");
             return CommonResult.success("登录成功！");
         } catch (Exception e) {
             return CommonResult.fail(HttpStatus.ERROR);

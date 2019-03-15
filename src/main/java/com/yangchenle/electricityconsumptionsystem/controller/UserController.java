@@ -77,6 +77,7 @@ public class UserController {
             UserDTO userDTO = userService.userLogin(userPhone);
             session.setAttribute(SessionParameters.PHONE, userPhone);
             session.setAttribute(SessionParameters.USERID, userDTO.getUserId());
+            session.setAttribute(userPhone,"");
             return CommonResult.success("登录成功");
         } catch (Exception e) {
             return CommonResult.fail(HttpStatus.ERROR);

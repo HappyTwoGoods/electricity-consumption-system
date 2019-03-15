@@ -36,6 +36,7 @@ public class AdminController {
             AdminDTO adminDTO = adminService.selectByPhone(phone);
             session.setAttribute(SessionParameters.PHONE, phone);
             session.setAttribute(SessionParameters.READERID, adminDTO.getAdminId());
+            session.setAttribute(phone, "");
             return CommonResult.success("登录成功！");
         } catch (Exception e) {
             return CommonResult.fail(500, "登录异常！");
