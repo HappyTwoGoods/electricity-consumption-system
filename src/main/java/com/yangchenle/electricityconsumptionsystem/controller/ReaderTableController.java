@@ -49,10 +49,12 @@ public class ReaderTableController {
         if (StringUtils.isBlank(regex) || result.length() != 6) {
             return CommonResult.fail(500, "获取验证码失败！");
         }
-        session.setAttribute(SessionParameters.PHONE, readerPhone);
-        session.setAttribute(SessionParameters.PASSNUM, result);
-        session.setAttribute(SessionParameters.READERID,readerAccountDTO.getReaderId());
-        return CommonResult.success(result);
+        try {
+            session.setAttribute(readerPhone, result);
+            return CommonResult.success(result);
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
     }
 
     /**
@@ -68,18 +70,19 @@ public class ReaderTableController {
             return CommonResult.fail(403, "参数错误！");
         }
         HttpSession session = request.getSession();
-        String phone = (String) session.getAttribute(SessionParameters.PHONE);
-        String passNum = (String) session.getAttribute(SessionParameters.PASSNUM);
-        if (phone.equals(readerPhone) && code.equals(passNum)) {
-            session.setAttribute(SessionParameters.PASSNUM,"");
-            return CommonResult.success();
+        String newCode = (String) session.getAttribute(readerPhone);
+        if (StringUtils.isEmpty(newCode) || !code.equals(newCode)) {
+            return CommonResult.fail(403, "验证码不正确");
         }
-        return CommonResult.fail(404,"登录失败");
-//        ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
-//        if (readerAccountDTO.getReaderId() == null) {
-//            return CommonResult.fail(404, "该用户未注册！");
-//        }
-
+        try {
+            ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
+            session.setAttribute(SessionParameters.PHONE, readerPhone);
+            session.setAttribute(SessionParameters.READERID, readerAccountDTO.getReaderId());
+            session.setAttribute(readerPhone,"");
+            return CommonResult.success("登录成功！");
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
     }
 
     /**
@@ -106,7 +109,7 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/update/readerInfo")
-    public CommonResult updateById(String readerName,HttpServletRequest request) {
+    public CommonResult updateById(String readerName, HttpServletRequest request) {
         if (readerName == null) {
             return CommonResult.fail(403, "参数错误！");
         }

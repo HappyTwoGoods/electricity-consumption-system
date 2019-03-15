@@ -3,6 +3,7 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
+import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.RandomCodeService;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -47,10 +48,12 @@ public class UserController {
             return CommonResult.fail(500, "获取验证码失败！");
         }
         HttpSession session = request.getSession();
-        session.setAttribute(SessionParameters.PHONE, userPhone);
-        session.setAttribute(SessionParameters.PASSNUM, result);
-        session.setAttribute(SessionParameters.USERID, userDTO.getUserId());
-        return CommonResult.success(result);
+        try {
+            session.setAttribute(userPhone, result);
+            return CommonResult.success(result);
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
     }
 
     /**
@@ -65,18 +68,21 @@ public class UserController {
         if (userPhone == null || code == null) {
             return CommonResult.fail(403, "参数错误！");
         }
-        UserDTO userDTO = userService.userLogin(userPhone);
-        if (userDTO.getUserId() == null){
-            return CommonResult.fail(404,"没有该用户信息！");
-        }
         HttpSession session = request.getSession();
-        String phone = (String) session.getAttribute(SessionParameters.PHONE);
-        String passNum = (String) session.getAttribute(SessionParameters.PASSNUM);
-        if (userPhone.equals(phone) && passNum.equals(code)) {
-            session.setAttribute(SessionParameters.PASSNUM,"");
-            return CommonResult.success();
+        String newCode = (String) session.getAttribute(userPhone);
+        if (StringUtils.isEmpty(newCode) || newCode.equals(code)) {
+            return CommonResult.fail(403, "验证码错误");
         }
-        return CommonResult.fail(404, "没有该用户信息！");
+        try {
+            UserDTO userDTO = userService.userLogin(userPhone);
+            session.setAttribute(SessionParameters.PHONE, userPhone);
+            session.setAttribute(SessionParameters.USERID, userDTO.getUserId());
+            session.setAttribute(userPhone,"");
+            return CommonResult.success("登录成功");
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
+
     }
 
     /**

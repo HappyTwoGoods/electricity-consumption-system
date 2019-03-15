@@ -7,6 +7,7 @@ import com.yangchenle.electricityconsumptionsystem.dto.AdminDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.AdminService;
 import com.yangchenle.electricityconsumptionsystem.service.RandomCodeService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,16 +25,22 @@ public class AdminController {
     @PostMapping("/manager/login")
     public CommonResult selectAdminByPhone(String phone, String code, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (phone == null || phone.length() != PhoneNum.LENGTH || code == null || code.length() < 6) {
+        if (phone == null || phone.length() != PhoneNum.LENGTH || code == null || code.length() != 6) {
             return CommonResult.fail(403, "参数错误");
         }
-        String newPhone = (String) session.getAttribute(SessionParameters.PHONE);
-        String newCode = (String) session.getAttribute(SessionParameters.PASSNUM);
-        if(newCode.equals(code)&&newPhone.equals(phone)){
-            session.setAttribute(SessionParameters.PASSNUM,"");
-            return CommonResult.success("登录成功");
+        String newCode = (String) session.getAttribute(phone);
+        if (StringUtils.isEmpty(newCode) || !newCode.equals(code)) {
+            return CommonResult.fail(403, "验证码不正确！");
         }
-        return CommonResult.fail(HttpStatus.NOT_FOUND);
+        try {
+            AdminDTO adminDTO = adminService.selectByPhone(phone);
+            session.setAttribute(SessionParameters.PHONE, phone);
+            session.setAttribute(SessionParameters.READERID, adminDTO.getAdminId());
+            session.setAttribute(phone, "");
+            return CommonResult.success("登录成功！");
+        } catch (Exception e) {
+            return CommonResult.fail(500, "登录异常！");
+        }
     }
 
     @PostMapping("/manager/verifyCode")
@@ -50,9 +57,11 @@ public class AdminController {
         if (result == null || result.length() != 6) {
             return CommonResult.fail(500, "获取验证码失败！");
         }
-        session.setAttribute(SessionParameters.PHONE, phone);
-        session.setAttribute(SessionParameters.PASSNUM, result);
-        session.setAttribute(SessionParameters.READERID, adminDTO.getAdminId());
-        return CommonResult.success(result);
+        try {
+            session.setAttribute(phone, result);
+            return CommonResult.success(result);
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
     }
 }
