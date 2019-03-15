@@ -102,7 +102,7 @@ public class ReaderTableController {
      *
      * @return
      */
-    @GetMapping("/raeder/query/readerId")
+    @GetMapping("/reader/query/readerId")
     public CommonResult queryById(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Integer reaedrId = (Integer) session.getAttribute(SessionParameters.READERID);
