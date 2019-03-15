@@ -14,7 +14,11 @@ public class StopEleltric {
 
     @Resource
     private ElectricDao electricDao;
-    @Scheduled(cron = "")
+
+    /**
+     * 每月三号，欠费用户停电
+     */
+    @Scheduled(cron = "0 0 0 3 * *")
     public void stopElectric() {
         List<ElectricEntity> electricEntities = electricDao.selectElectricAll();
         List<Integer> ids = electricEntities.stream().filter(electricEntity -> electricEntity.getMoney().compareTo(BigDecimal.valueOf(0)) < 0).map(ElectricEntity::getElectricId).collect(Collectors.toList());
