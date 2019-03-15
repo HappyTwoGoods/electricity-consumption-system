@@ -3,6 +3,7 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.BossAccount;
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
+import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +40,9 @@ public class PaymentRecordController {
      * @return
      */
     @GetMapping("/user/query/payment")
-    public CommonResult queryPaymentRecord(){
-        Integer userId = 1;
+    public CommonResult queryPaymentRecord(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
         List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
         if (CollectionUtils.isEmpty(electricDTOList)){
             return CommonResult.fail(404,"没有该用户电表记录");
@@ -64,8 +68,9 @@ public class PaymentRecordController {
      */
     @GetMapping("/user/payMoney")
     public CommonResult payMoney(Integer paymentMethod, BigDecimal money,
-                                 Integer electricId){
-        Integer userId = 1;
+                                 Integer electricId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
         if (paymentMethod == null || electricId == null){
             return CommonResult.fail(403,"参数错误！");
         }
