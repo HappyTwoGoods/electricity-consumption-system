@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -17,12 +18,15 @@ public class CopyRecordTest {
 
     @Test
     public void addCopyTest() {
-        CopyRecordDTO copyRecordDTO = new CopyRecordDTO();
-        copyRecordDTO.setCopyData(BigDecimal.valueOf(10.45));
-        copyRecordDTO.setReaderId(1);
-        copyRecordDTO.setElectricId(1);
-        int i = copyRecordService.addCopyRecord(copyRecordDTO);
-        System.out.println(i);
+        Random random = new Random();
+
+        for (int i = 0; i < 10; i++) {
+            CopyRecordDTO copyRecordDTO = new CopyRecordDTO();
+            copyRecordDTO.setCopyData(BigDecimal.valueOf(random.nextFloat()*100));
+            copyRecordDTO.setReaderId(1);
+            copyRecordDTO.setElectricId(i+1);
+            copyRecordService.addCopyRecord(copyRecordDTO);
+        }
     }
 
     @Test

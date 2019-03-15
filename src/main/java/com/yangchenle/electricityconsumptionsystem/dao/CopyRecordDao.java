@@ -4,6 +4,7 @@ import com.yangchenle.electricityconsumptionsystem.entity.CopyRecordEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 抄表员信息
@@ -34,4 +35,11 @@ public interface CopyRecordDao {
      * @return
      */
     CopyRecordEntity selectCopyRecordById(@Param("id") Integer id);
+
+    /**
+     * 查询最新的抄表数据
+     *
+     * @return
+     */
+    List<CopyRecordEntity> selectNewRecord();
 }

@@ -19,6 +19,14 @@
         UpdateTime
     </sql>
 
+    <sql id="allFileTwo">
+        CopyId,
+        ReaderId,
+        a.ElectricId ElectricId,
+        CopyData,
+        AddTime,
+        UpdateTime
+    </sql>
     <insert id="addCopyRecord" parameterType="com.yangchenle.electricityconsumptionsystem.entity.ReaderAccountEntity">
         INSERT INTO
         copy_record(ReaderId,ElectricId, CopyData, AddTime, UpdateTime)
@@ -52,5 +60,14 @@
         <include refid="allFile"/>
         FROM copy_record
         WHERE
+    </select>
+
+    <select id="selectNewRecord" resultMap="CopyRecord">
+        select
+        <include refid="allFileTwo"/>
+        from copy_record a,(SELECT MAX(ADDTIME) time,ElectricId
+        FROM copy_record
+        GROUP by ElectricId) b
+        where a.AddTime=b.time and a.ElectricId=b.ElectricId
     </select>
 </mapper>

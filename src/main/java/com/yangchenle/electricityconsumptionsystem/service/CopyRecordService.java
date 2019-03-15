@@ -3,6 +3,7 @@ package com.yangchenle.electricityconsumptionsystem.service;
 import com.yangchenle.electricityconsumptionsystem.dto.CopyRecordDTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface CopyRecordService {
     /**
