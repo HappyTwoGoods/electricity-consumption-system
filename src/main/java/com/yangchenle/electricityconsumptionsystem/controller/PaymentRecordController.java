@@ -2,6 +2,7 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.BossAccount;
+import com.yangchenle.electricityconsumptionsystem.constant.ElectricState;
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
@@ -79,17 +80,33 @@ public class PaymentRecordController {
         if (price.compareTo(money) < 0 ){
             return CommonResult.fail(500,"余额不足！");
         }
-        int userPayResult = userService.payById(price.multiply(money),userId);
+        int userPayResult = userService.payById(price.subtract(money),userId);
         if (userPayResult <= 0){
             return CommonResult.fail(500,"支付失败！");
         }
-        int payResult = userService.payById(money, 1);
+        UserDTO userDTO1 = userService.queryById(1);
+        BigDecimal bossMoney = userDTO1.getPrice();
+        BigDecimal bossMoneyNum = bossMoney.add(money);
+        int payResult = userService.payById(bossMoneyNum, 1);
         if (payResult <= 0){
             return CommonResult.fail(500,"转账失败！");
         }
         int result = paymentRecordService.updatePayment(paymentMethod,new BigDecimal(0),PaymentState.PAID,electricId);
         if (result <= 0){
             return CommonResult.fail(500,"缴费失败！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricById(electricId);
+        BigDecimal elePrice = electricDTO.getMoney();
+        BigDecimal priceNum = elePrice.add(money);
+        if (priceNum.compareTo(money) < 0){
+            int payResults = electricService.updateElectric(null,priceNum, ElectricState.STOP,electricId);
+            if (payResults <= 0){
+                return CommonResult.fail(500,"更改电表信息失败！");
+            }
+        }
+        int payResulted = electricService.updateElectric(null,priceNum,ElectricState.NORMAL,electricId);
+        if (payResulted <= 0){
+            return CommonResult.fail(500,"更改电表信息失败！");
         }
         return CommonResult.success();
     }

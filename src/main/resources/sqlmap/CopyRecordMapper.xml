@@ -46,4 +46,11 @@
         from copy_record
         where CopyId = #{id}
     </select>
+
+    <select id="queryAll" parameterType="map" resultMap="CopyRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM copy_record
+        WHERE
+    </select>
 </mapper>
