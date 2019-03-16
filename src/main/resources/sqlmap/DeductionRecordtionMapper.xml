@@ -29,15 +29,16 @@
         <include refid="allField"/>
         from deduction_record
         where 1=1
-        <if test="electricId!=null">
+        <if test="electricId != null">
             and electric_id=#{electricId}
         </if>
-        <if test="start!=null">
+        <if test="start != null">
             and add_time&gt;#{start}
         </if>
-        <if test="end">
+        <if test="end != null">
             and add_time&lt;#{end}
         </if>
+        order by add_time desc
     </select>
 
     <select id="selectDeductionRecordById" parameterType="int" resultMap="DeductionRecord">
@@ -51,5 +52,22 @@
         select
         <include refid="allField"/>
         from deduction_record
+        order by add_time desc
+    </select>
+
+    <select id="selectSum" parameterType="map" resultType="com.yangchenle.electricityconsumptionsystem.entity.MoneyAndConsumptionSumEntity">
+        select sum(money) money,sum(electric_consumption) consumption,electric_id electricId
+        from deduction_record
+        where 1=1
+        <if test="electricId != null">
+            and electric_id=#{electricId}
+        </if>
+        <if test="start != null">
+            and add_time&gt;#{start}
+        </if>
+        <if test="end != null">
+            and add_time&lt;#{end}
+        </if>
+        GROUP by electric_id
     </select>
 </mapper>
