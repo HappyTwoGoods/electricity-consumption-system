@@ -22,7 +22,7 @@ public class CopyRecordTest {
 
         for (int i = 0; i < 10; i++) {
             CopyRecordDTO copyRecordDTO = new CopyRecordDTO();
-            copyRecordDTO.setCopyData(BigDecimal.valueOf(random.nextFloat()*100));
+            copyRecordDTO.setCopyData(BigDecimal.valueOf(random.nextFloat()*100+100));
             copyRecordDTO.setReaderId(1);
             copyRecordDTO.setElectricId(i+1);
             copyRecordService.addCopyRecord(copyRecordDTO);
