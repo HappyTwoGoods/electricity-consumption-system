@@ -35,29 +35,29 @@ public class PaymentRecordController {
     @Resource
     private UserService userService;
 
-    /**
-     * 用户查看自己未缴费记录
-     *
-     * @return
-     */
-    @GetMapping("/user/query/payment")
-    public CommonResult queryPaymentRecord(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
-        if (CollectionUtils.isEmpty(electricDTOList)){
-            return CommonResult.fail(404,"没有该用户电表记录");
-        }
-        Map<String,List<PaymentRecordDTO>> paymentMap = new HashMap<>();
-        for (ElectricDTO electric: electricDTOList) {
-            List<PaymentRecordDTO> paymentRecordDTOS = paymentRecordService.queryPayment(electric.getElectricId(), PaymentState.UNPAID);
-            if (CollectionUtils.isEmpty(paymentRecordDTOS)){
-                continue;
-            }
-            paymentMap.put("paymentInfo",paymentRecordDTOS);
-        }
-        return CommonResult.success(paymentMap);
-    }
+//    /**
+//     * 用户查看自己未缴费记录
+//     *
+//     * @return
+//     */
+////    @GetMapping("/user/query/payment")
+//    public CommonResult queryPaymentRecord(HttpServletRequest request){
+//        HttpSession session = request.getSession();
+//        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+//        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
+//        if (CollectionUtils.isEmpty(electricDTOList)){
+//            return CommonResult.fail(404,"没有该用户电表记录");
+//        }
+//        Map<String,List<PaymentRecordDTO>> paymentMap = new HashMap<>();
+//        for (ElectricDTO electric: electricDTOList) {
+//            List<PaymentRecordDTO> paymentRecordDTOS = paymentRecordService.queryPayment(electric.getElectricId(), PaymentState.UNPAID);
+//            if (CollectionUtils.isEmpty(paymentRecordDTOS)){
+//                continue;
+//            }
+//            paymentMap.put("paymentInfo",paymentRecordDTOS);
+//        }
+//        return CommonResult.success(paymentMap);
+//    }
 
     /**
      * 缴费
@@ -98,11 +98,13 @@ public class PaymentRecordController {
         ElectricDTO electricDTO = electricService.selectElectricById(electricId);
         BigDecimal elePrice = electricDTO.getMoney();
         BigDecimal priceNum = elePrice.add(money);
-        if (priceNum.compareTo(money) < 0){
+        int r = priceNum.compareTo(BigDecimal.ZERO);
+        if (r < 0){
             int payResults = electricService.updateElectric(null,priceNum, ElectricState.STOP,electricId);
             if (payResults <= 0){
                 return CommonResult.fail(500,"更改电表信息失败！");
             }
+            return CommonResult.success();
         }
         int payResulted = electricService.updateElectric(null,priceNum,ElectricState.NORMAL,electricId);
         if (payResulted <= 0){

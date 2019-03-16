@@ -166,4 +166,31 @@ public class UserController {
         return CommonResult.success();
     }
 
+    /**
+     * 用户充值
+     *
+     * @param addPrice
+     * @param request
+     * @return
+     */
+    @GetMapping("/user/add/price")
+    public CommonResult addUserPrice(BigDecimal addPrice, HttpServletRequest request){
+        if (addPrice == null){
+            return CommonResult.fail(403,"参数失败！");
+        }
+      HttpSession session = request.getSession();
+      Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+      UserDTO userDTO = userService.queryById(userId);
+      if (userDTO.getUserId() == null){
+          return CommonResult.fail(500,"查看用户信息失败！");
+      }
+      BigDecimal price = userDTO.getPrice();
+      BigDecimal priceNum = price.add(addPrice);
+      int data = userService.payById(priceNum,userId);
+      if (data <= 0){
+          return CommonResult.fail(500,"充值失败!");
+      }
+      return CommonResult.success();
+    }
+
 }

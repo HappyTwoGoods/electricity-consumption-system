@@ -11,9 +11,9 @@ import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -103,6 +103,29 @@ public class ElectricController {
             return CommonResult.fail(HttpStatus.ERROR);
         }
         return CommonResult.success("删除成功");
+    }
+
+    /**
+     * 动态查询用户电表信息
+     *
+     * @param electricNum
+     * @param type
+     * @param state
+     * @param request
+     * @return
+     */
+    @GetMapping("/user/query/byCondition")
+    public CommonResult queryByCondition(@RequestParam(required = false, defaultValue = "")Integer electricNum,
+                                         @RequestParam(required = false, defaultValue = "")Integer type,
+                                         @RequestParam(required = false, defaultValue = "")Integer state,
+                                         HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        List<ElectricDTO> electricDTOList = electricService.queryByCondition(userId,electricNum,type,state);
+        if (CollectionUtils.isEmpty(electricDTOList)){
+            return CommonResult.fail(404,"没有相关信息!");
+        }
+        return CommonResult.success(electricDTOList);
     }
 
     private reElectric reElectricData(ElectricDTO electricDTO) {

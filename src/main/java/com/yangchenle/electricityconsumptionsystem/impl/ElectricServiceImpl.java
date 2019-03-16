@@ -99,4 +99,13 @@ public class ElectricServiceImpl implements ElectricService {
         BeanUtils.copyProperties(electricEntity, electricDTO);
         return electricDTO;
     }
+
+    @Override
+    public List<ElectricDTO> queryByCondition(Integer userId,Integer electricNum, Integer type, Integer state) {
+        List<ElectricEntity> electricEntityList = electricDao.queryByCondition(userId,electricNum,type,state);
+        if (CollectionUtils.isEmpty(electricEntityList)){
+            return null;
+        }
+        return BeansListUtils.copyListProperties(electricEntityList,ElectricDTO.class);
+    }
 }

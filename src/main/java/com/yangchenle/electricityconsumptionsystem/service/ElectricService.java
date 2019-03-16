@@ -65,4 +65,17 @@ public interface ElectricService {
      * @return
      */
     ElectricDTO selectElectricByNum(Integer num);
+
+    /**
+     * 动态查询电表信息
+     *
+     * @param electricNum
+     * @param type
+     * @param state
+     * @return
+     */
+    List<ElectricDTO> queryByCondition(Integer userId,
+                                       Integer electricNum,
+                                       Integer type,
+                                       Integer state);
 }

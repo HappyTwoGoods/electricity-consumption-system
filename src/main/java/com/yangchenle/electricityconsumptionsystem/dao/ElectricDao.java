@@ -72,4 +72,9 @@ public interface ElectricDao {
      * @return
      */
     ElectricEntity selectElectricByNum(Integer num);
+
+    List<ElectricEntity> queryByCondition(@Param("userId")Integer userId,
+                                          @Param("electricNum") Integer electricNum,
+                                          @Param("type") Integer type,
+                                          @Param("state") Integer state);
 }

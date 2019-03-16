@@ -79,4 +79,21 @@
         from electric
         where ElectricNum=#{num}
     </select>
+    
+    <select id="queryByCondition" parameterType="map" resultMap="Electric">
+        SELECT
+        <include refid="allFile"/>
+        FROM electric
+        WHERE
+        UserId = #{userId }
+        <if test="electricNum != null">
+            AND ElectricNum = #{electricNum }
+        </if>
+        <if test="type != null">
+            AND Type = #{type }
+        </if>
+        <if test="state != null">
+            AND state = #{state }
+        </if>
+    </select>
 </mapper>
