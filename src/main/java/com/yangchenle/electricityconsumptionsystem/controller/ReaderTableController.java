@@ -86,15 +86,26 @@ public class ReaderTableController {
     }
 
     /**
+     * 抄表员退出
+     *
+     * @return
+     */
+    @GetMapping("/reader/logout")
+    public CommonResult readerLogout(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionParameters.READERID,"");
+        return CommonResult.success();
+    }
+
+    /**
      * 抄表员查看个人信息
      *
      * @return
      */
-    @GetMapping("/raeder/query/readerId")
+    @GetMapping("/reader/query/readerId")
     public CommonResult queryById(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Integer reaedrId = (Integer) session.getAttribute(SessionParameters.READERID);
-//        Integer reaedrId = 1;
         ReaderAccountDTO readerAccountDTO = readerTableService.queryById(reaedrId);
         if (readerAccountDTO.getReaderId() == null) {
             return CommonResult.fail(404, "没有该用户信息！");
@@ -115,7 +126,6 @@ public class ReaderTableController {
         }
         HttpSession session = request.getSession();
         Integer readerId = (Integer) session.getAttribute(SessionParameters.READERID);
-//        Integer readerId = 1;
         int result = readerTableService.updateReaderInfo(readerName, readerId);
         if (result <= 0) {
             return CommonResult.fail(500, "信息修改失败！");

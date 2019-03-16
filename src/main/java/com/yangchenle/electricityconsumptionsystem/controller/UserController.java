@@ -70,7 +70,7 @@ public class UserController {
         }
         HttpSession session = request.getSession();
         String newCode = (String) session.getAttribute(userPhone);
-        if (StringUtils.isEmpty(newCode) || newCode.equals(code)) {
+        if (StringUtils.isEmpty(newCode) || !newCode.equals(code)) {
             return CommonResult.fail(403, "验证码错误");
         }
         try {
@@ -83,6 +83,18 @@ public class UserController {
             return CommonResult.fail(HttpStatus.ERROR);
         }
 
+    }
+
+    /**
+     * 用户退出
+     *
+     * @return
+     */
+    @GetMapping("/user/logout")
+    public CommonResult logout(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionParameters.USERID,"");
+        return CommonResult.success();
     }
 
     /**
@@ -123,7 +135,6 @@ public class UserController {
      */
     @GetMapping("/user/query/userId")
     public CommonResult queryById(HttpServletRequest request) {
-//        Integer userId = 1;
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
         UserDTO userDTO = userService.queryById(userId);
@@ -148,7 +159,6 @@ public class UserController {
                                        @RequestParam(required = false, defaultValue = "") String userAddress) {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-        //        Integer userId = 1;
         int data = userService.updateUserInfo(userName, userAccount, userAddress, userId);
         if (data <= 0) {
             return CommonResult.fail(500, "用户信息修改错误！");

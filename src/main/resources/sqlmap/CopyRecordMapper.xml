@@ -55,6 +55,13 @@
         where CopyId = #{id}
     </select>
 
+    <select id="queryAll" parameterType="map" resultMap="CopyRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM copy_record
+        WHERE
+    </select>
+
     <select id="selectNewRecord" resultMap="CopyRecord">
         select
         <include refid="allFileTwo"/>

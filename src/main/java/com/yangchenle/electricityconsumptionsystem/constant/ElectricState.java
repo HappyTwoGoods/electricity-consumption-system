@@ -1,6 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.constant;
 
 public class ElectricState {
+
     /**
      * 正常
      */
