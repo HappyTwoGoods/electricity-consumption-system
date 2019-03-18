@@ -105,6 +105,18 @@ public class ElectricController {
         return CommonResult.success("删除成功");
     }
 
+    @GetMapping("/manager/select/electricByNum")
+    public CommonResult selectByNum(Integer num) {
+        if (num == null || num < 1) {
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
+        if (electricDTO == null) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        return CommonResult.success(reElectricData(electricDTO));
+    }
+
     /**
      * 动态查询用户电表信息
      *
@@ -153,6 +165,8 @@ public class ElectricController {
         private Integer type;
 
         private BigDecimal lastData;
+
+        private Integer userId;
 
         private String username;
 

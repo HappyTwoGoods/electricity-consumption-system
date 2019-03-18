@@ -2,7 +2,9 @@ package com.yangchenle.electricityconsumptionsystem.impl;
 
 import com.yangchenle.electricityconsumptionsystem.dao.DeductionRecordDao;
 import com.yangchenle.electricityconsumptionsystem.dto.DeductionRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.MoneyAndConsumptionSumDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.DeductionRecordEntity;
+import com.yangchenle.electricityconsumptionsystem.entity.MoneyAndConsumptionSumEntity;
 import com.yangchenle.electricityconsumptionsystem.service.DeductionService;
 import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
 import org.springframework.beans.BeanUtils;
@@ -50,4 +52,14 @@ public class DeductionRecordServiceImpl implements DeductionService {
         }
         return BeansListUtils.copyListProperties(deductionRecordEntities, DeductionRecordDTO.class);
     }
+
+    @Override
+    public List<MoneyAndConsumptionSumDTO> selectSum(Integer electricId, Date start, Date end) {
+        List<MoneyAndConsumptionSumEntity> sumEntities = deductionRecordDao.selectSum(electricId, start, end);
+        if (CollectionUtils.isEmpty(sumEntities)) {
+            return new ArrayList<>();
+        }
+        return BeansListUtils.copyListProperties(sumEntities, MoneyAndConsumptionSumDTO.class);
+    }
+
 }

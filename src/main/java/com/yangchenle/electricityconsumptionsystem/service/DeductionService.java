@@ -1,6 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.service;
 
 import com.yangchenle.electricityconsumptionsystem.dto.DeductionRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.MoneyAndConsumptionSumDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -30,4 +31,14 @@ public interface DeductionService {
      * @return
      */
     List<DeductionRecordDTO> selectDeductionRecordAll();
+
+    /**
+     * 根据时间||电表id统计扣费和用电
+     *
+     * @param electricId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<MoneyAndConsumptionSumDTO> selectSum(Integer electricId, Date start, Date end);
 }

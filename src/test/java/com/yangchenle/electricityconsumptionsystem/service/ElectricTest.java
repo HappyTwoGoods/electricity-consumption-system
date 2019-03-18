@@ -28,8 +28,8 @@ public class ElectricTest {
     @Test
     public void addElectricTest() {
         Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            electricService.addElectric(10000+random.nextInt(10000), random.nextInt(2)+1, BigDecimal.valueOf(random.nextFloat()+random.nextInt(1000)));
+        for (int i = 0; i < 10; i++) {
+            electricService.addElectric(10000+random.nextInt(1000), random.nextInt(2), BigDecimal.valueOf(0));
         }
     }
 
