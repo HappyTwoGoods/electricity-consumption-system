@@ -2,10 +2,15 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.dto.DeductionRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.MoneyAndConsumptionSumDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.DeductionService;
+import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
+import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +26,10 @@ import java.util.List;
 public class DeductionRecordController {
     @Resource
     private DeductionService deductionService;
+    @Resource
+    private ElectricService electricService;
+    @Resource
+    private UserService userService;
 
     @GetMapping("/select/deductionAll")
     public CommonResult selectAll() {
@@ -27,7 +37,8 @@ public class DeductionRecordController {
         if (CollectionUtils.isEmpty(recordDTOS)) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(recordDTOS);
+        List<ResultDeduction> result = createRecordResult(recordDTOS);
+        return CommonResult.success(result);
     }
 
     @GetMapping("/select/deduction")
@@ -38,7 +49,8 @@ public class DeductionRecordController {
         if (CollectionUtils.isEmpty(deductionRecordDTOS)) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(deductionRecordDTOS);
+        List<ResultDeduction> result = createRecordResult(deductionRecordDTOS);
+        return CommonResult.success(result);
     }
 
     @GetMapping("/select/sum")
@@ -49,23 +61,82 @@ public class DeductionRecordController {
         if (CollectionUtils.isEmpty(moneyAndConsumptionSumDTOS)) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(moneyAndConsumptionSumDTOS);
+        List<ResultSum> sum = createSum(moneyAndConsumptionSumDTOS);
+        return CommonResult.success(sum);
+    }
+
+    private List<ResultDeduction> createRecordResult(List<DeductionRecordDTO> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            return new ArrayList<>();
+        }
+        ArrayList<ResultDeduction> resultDeductions = new ArrayList<>();
+        for (DeductionRecordDTO deductionRecordDTO : list) {
+            if (deductionRecordDTO != null) {
+                ResultDeduction resultDeduction = new ResultDeduction();
+                BeanUtils.copyProperties(deductionRecordDTO, resultDeduction);
+                ElectricDTO electricDTO = electricService.selectElectricById(deductionRecordDTO.getElectricId());
+                if (electricDTO != null) {
+                    resultDeduction.setElectricNum(electricDTO.getNum());
+                    if (electricDTO.getUserId() != null) {
+                        resultDeduction.setUserId(electricDTO.getUserId());
+                        UserDTO userDTO = userService.queryById(electricDTO.getUserId());
+                        resultDeduction.setUsername(userDTO.getUserName());
+                    } else {
+                        resultDeduction.setUsername("暂无绑定");
+                    }
+                    resultDeductions.add(resultDeduction);
+                }
+            }
+        }
+        return resultDeductions;
+    }
+
+    private List<ResultSum> createSum(List<MoneyAndConsumptionSumDTO> list) {
+        ArrayList<ResultSum> resultSums = new ArrayList<>();
+        if (CollectionUtils.isEmpty(list)) {
+            return resultSums;
+        }
+        for (MoneyAndConsumptionSumDTO moneyAndConsumptionSumDTO : list) {
+            if (moneyAndConsumptionSumDTO != null) {
+                ResultSum resultSum = new ResultSum();
+                BeanUtils.copyProperties(moneyAndConsumptionSumDTO, resultSum);
+                ElectricDTO electricDTO = electricService.selectElectricById(moneyAndConsumptionSumDTO.getElectricId());
+                if (electricDTO != null) {
+                    resultSum.setElectricNum(electricDTO.getNum());
+                    if (electricDTO.getUserId() != null) {
+                        resultSum.setUserId(electricDTO.getUserId());
+                        UserDTO userDTO = userService.queryById(electricDTO.getUserId());
+                        resultSum.setUsername(userDTO.getUserName());
+                    } else {
+                        resultSum.setUsername("暂未绑定");
+                    }
+                    resultSums.add(resultSum);
+                }
+            }
+        }
+        return resultSums;
     }
 
     @Data
-    private class Resultdeduction {
-        private Integer id;
-
+    private class ResultSum {
+        private Integer electricId;
         private Integer electricNum;
-
+        private Integer userId;
         private String username;
-
-        private BigDecimal electricConsumption;
-
         private BigDecimal money;
+        private BigDecimal consumption;
+    }
 
+    @Data
+    private class ResultDeduction {
+        private Integer id;
+        private Integer electricId;
+        private Integer electricNum;
+        private Integer userId;
+        private String username;
+        private BigDecimal electricConsumption;
+        private BigDecimal money;
         private Date addTime;
-
         private Date updateTime;
     }
 }

@@ -131,6 +131,8 @@ public class ElectricController {
 
         private BigDecimal lastData;
 
+        private Integer userId;
+
         private String username;
 
         private BigDecimal money;
