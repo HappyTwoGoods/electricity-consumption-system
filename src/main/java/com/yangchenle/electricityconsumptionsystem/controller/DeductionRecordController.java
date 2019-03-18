@@ -10,14 +10,18 @@ import com.yangchenle.electricityconsumptionsystem.service.DeductionService;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +35,7 @@ public class DeductionRecordController {
     @Resource
     private UserService userService;
 
-    @GetMapping("/select/deductionAll")
+    @GetMapping("/manager/select/deductionAll")
     public CommonResult selectAll() {
         List<DeductionRecordDTO> recordDTOS = deductionService.selectDeductionRecordAll();
         if (CollectionUtils.isEmpty(recordDTOS)) {
@@ -41,28 +45,76 @@ public class DeductionRecordController {
         return CommonResult.success(result);
     }
 
-    @GetMapping("/select/deduction")
-    public CommonResult selectDeduction(@RequestParam(required = false) Integer electricId,
-                                        @RequestParam(required = false) Date start,
-                                        @RequestParam(required = false) Date end) {
-        List<DeductionRecordDTO> deductionRecordDTOS = deductionService.selectDeductionRecord(electricId, start, end);
-        if (CollectionUtils.isEmpty(deductionRecordDTOS)) {
-            return CommonResult.fail(HttpStatus.NOT_FOUND);
+    @GetMapping("/manager/select/deduction")
+    public CommonResult selectDeduction(@RequestParam(required = false) Integer electricNum,
+                                        @RequestParam(required = false) String start,
+                                        @RequestParam(required = false) String end) {
+        Integer electricId = null;
+        Date startTime = null;
+        Date endTime = null;
+        if (electricNum != null) {
+            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
+            if (electricDTO != null) {
+                electricId = electricDTO.getElectricId();
+            } else {
+                return CommonResult.fail(404, "电表编号不存在");
+            }
         }
-        List<ResultDeduction> result = createRecordResult(deductionRecordDTOS);
-        return CommonResult.success(result);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if (!StringUtils.isEmpty(start)) {
+                startTime = sdf.parse(start);
+            }
+            if (!StringUtils.isEmpty(end)) {
+                endTime = sdf.parse(end);
+                endTime = new DateTime(endTime).plusDays(1).toDate();
+            }
+            List<DeductionRecordDTO> deductionRecordDTOS = deductionService.selectDeductionRecord(electricId, startTime, endTime);
+            if (CollectionUtils.isEmpty(deductionRecordDTOS)) {
+                return CommonResult.fail(HttpStatus.NOT_FOUND);
+            }
+            List<ResultDeduction> result = createRecordResult(deductionRecordDTOS);
+            return CommonResult.success(result);
+        } catch (ParseException e) {
+            System.out.println("时间格式错误");
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
     }
 
-    @GetMapping("/select/sum")
-    public CommonResult selectSumPriceAndConsumption(@RequestParam(required = false) Integer electricId,
-                                                     @RequestParam(required = false) Date start,
-                                                     @RequestParam(required = false) Date end) {
-        List<MoneyAndConsumptionSumDTO> moneyAndConsumptionSumDTOS = deductionService.selectSum(electricId, start, end);
-        if (CollectionUtils.isEmpty(moneyAndConsumptionSumDTOS)) {
-            return CommonResult.fail(HttpStatus.NOT_FOUND);
+    @GetMapping("/manager/select/sum")
+    public CommonResult selectSumPriceAndConsumption(@RequestParam(required = false) Integer electricNum,
+                                                     @RequestParam(required = false) String start,
+                                                     @RequestParam(required = false) String end) {
+        Integer electricId = null;
+        Date startTime = null;
+        Date endTime = null;
+        if (electricNum != null) {
+            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
+            if (electricDTO == null) {
+                return CommonResult.fail(403, "电表编号不存在");
+            } else {
+                electricId = electricDTO.getElectricId();
+            }
         }
-        List<ResultSum> sum = createSum(moneyAndConsumptionSumDTOS);
-        return CommonResult.success(sum);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            if (!StringUtils.isEmpty(start)) {
+                startTime = sdf.parse(start);
+            }
+            if (!StringUtils.isEmpty(end)) {
+                endTime = sdf.parse(end);
+                endTime = new DateTime(endTime).plusDays(1).toDate();
+            }
+            List<MoneyAndConsumptionSumDTO> moneyAndConsumptionSumDTOS = deductionService.selectSum(electricId, startTime, endTime);
+            if (CollectionUtils.isEmpty(moneyAndConsumptionSumDTOS)) {
+                return CommonResult.fail(HttpStatus.NOT_FOUND);
+            }
+            List<ResultSum> sum = createSum(moneyAndConsumptionSumDTOS);
+            return CommonResult.success(sum);
+        } catch (ParseException e) {
+            System.out.println("时间格式错误");
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
     }
 
     private List<ResultDeduction> createRecordResult(List<DeductionRecordDTO> list) {

@@ -33,10 +33,10 @@
             and electric_id=#{electricId}
         </if>
         <if test="start != null">
-            and add_time&gt;#{start}
+            and add_time&gt;=#{start}
         </if>
         <if test="end != null">
-            and add_time&lt;#{end}
+            and add_time&lt;=#{end}
         </if>
         order by add_time desc
     </select>
@@ -63,10 +63,10 @@
             and electric_id=#{electricId}
         </if>
         <if test="start != null">
-            and add_time&gt;#{start}
+            and add_time&gt;=#{start}
         </if>
         <if test="end != null">
-            and add_time&lt;#{end}
+            and add_time&lt;=#{end}
         </if>
         GROUP by electric_id
     </select>

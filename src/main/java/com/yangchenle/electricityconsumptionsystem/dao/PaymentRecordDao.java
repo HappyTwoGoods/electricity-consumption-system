@@ -5,6 +5,7 @@ import com.yangchenle.electricityconsumptionsystem.entity.PaymentRecordEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,4 +36,17 @@ public interface PaymentRecordDao {
                       @Param("money")BigDecimal money,
                       @Param("paymentState") Integer paymentState,
                       @Param("electricId") Integer electricId);
+
+    /**
+     * 根据电表id||支付状态||时间查缴费记录
+     * @param electricId
+     * @param state
+     * @param start
+     * @param end
+     * @return
+     */
+    List<PaymentRecordEntity> selectPayRecordAll(@Param("electricId") Integer electricId,
+                                                 @Param("state") Integer state,
+                                                 @Param("start")Date start,
+                                                 @Param("end") Date end);
 }

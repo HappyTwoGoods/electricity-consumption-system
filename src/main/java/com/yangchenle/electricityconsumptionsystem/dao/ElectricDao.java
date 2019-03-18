@@ -71,5 +71,5 @@ public interface ElectricDao {
      * @param num
      * @return
      */
-    ElectricEntity selectElectricByNum(Integer num);
+    ElectricEntity selectElectricByNum(@Param("num") Integer num);
 }

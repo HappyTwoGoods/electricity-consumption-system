@@ -11,7 +11,6 @@ import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -103,6 +102,18 @@ public class ElectricController {
             return CommonResult.fail(HttpStatus.ERROR);
         }
         return CommonResult.success("删除成功");
+    }
+
+    @GetMapping("/manager/select/electricByNum")
+    public CommonResult selectByNum(Integer num) {
+        if (num == null || num < 1) {
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
+        if (electricDTO == null) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        return CommonResult.success(reElectricData(electricDTO));
     }
 
     private reElectric reElectricData(ElectricDTO electricDTO) {
