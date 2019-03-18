@@ -7,10 +7,9 @@ import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.dto.TypeTableDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
-import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
-import com.yangchenle.electricityconsumptionsystem.service.PaymentRecordService;
-import com.yangchenle.electricityconsumptionsystem.service.UserService;
+import com.yangchenle.electricityconsumptionsystem.service.*;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +33,12 @@ public class PaymentRecordController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private TypeTableService typeTableService;
+
+    @Resource
+    private DeductionService deductionService;
 
 //    /**
 //     * 用户查看自己未缴费记录
@@ -110,6 +115,11 @@ public class PaymentRecordController {
         if (payResulted <= 0){
             return CommonResult.fail(500,"更改电表信息失败！");
         }
+        Integer type = electricDTO.getType();
+        TypeTableDTO typeTableDTO = typeTableService.selectById(type);
+        BigDecimal typePrice = typeTableDTO.getPrice();
+        BigDecimal consumption = money.subtract(typePrice);
+//        int data = deductionService.
         return CommonResult.success();
     }
 }

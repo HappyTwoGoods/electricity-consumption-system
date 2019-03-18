@@ -1,5 +1,6 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
+import com.yangchenle.electricityconsumptionsystem.dto.TypeTableDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.TypeTableEntity;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,5 +32,13 @@ public interface TypeTableDao {
      * @return
      */
     List<TypeTableEntity> selectTypeAll();
+
+    /**
+     *根据id查询
+     *
+     * @param typeId
+     * @return
+     */
+    TypeTableEntity selectById(@Param("typeId")Integer typeId);
 
 }

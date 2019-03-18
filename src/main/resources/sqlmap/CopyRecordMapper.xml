@@ -70,4 +70,11 @@
         GROUP by ElectricId) b
         where a.AddTime=b.time and a.ElectricId=b.ElectricId
     </select>
+
+    <select id="selectByReader" parameterType="map" resultMap="CopyRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM copy_record
+        WHERE ReaderId = #{readerId }
+    </select>
 </mapper>

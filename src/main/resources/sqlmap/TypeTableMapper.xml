@@ -34,4 +34,11 @@
         UpdateTime=now()
         where TypeNum = #{num}
     </update>
+
+    <select id="selectById" parameterType="map" resultMap="typeTable">
+        SELECT
+        <include refid="allField"/>
+        FROM type_table
+        WHERE TypeId = #{typeId }
+    </select>
 </mapper>

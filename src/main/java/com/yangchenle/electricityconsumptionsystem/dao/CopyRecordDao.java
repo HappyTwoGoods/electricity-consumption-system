@@ -42,4 +42,6 @@ public interface CopyRecordDao {
      * @return
      */
     List<CopyRecordEntity> selectNewRecord();
+
+    List<CopyRecordEntity> selectByReader(@Param("readerId")Integer readerId);
 }

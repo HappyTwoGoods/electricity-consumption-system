@@ -1,5 +1,6 @@
 package com.yangchenle.electricityconsumptionsystem.impl;
 
+import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.ElectricType;
 import com.yangchenle.electricityconsumptionsystem.dao.TypeTableDao;
 import com.yangchenle.electricityconsumptionsystem.dto.TypeTableDTO;
@@ -50,5 +51,16 @@ public class TypeTableServiceImpl implements TypeTableService {
             return new ArrayList<>();
         }
         return BeansListUtils.copyListProperties(typeTableEntities, TypeTableDTO.class);
+    }
+
+    @Override
+    public TypeTableDTO selectById(Integer id) {
+        if (id == null){
+            return null;
+        }
+        TypeTableEntity typeTableEntity = typeTableDao.selectById(id);
+        TypeTableDTO typeTableDTO = new TypeTableDTO();
+        BeanUtils.copyProperties(typeTableEntity,typeTableDTO);
+        return typeTableDTO;
     }
 }

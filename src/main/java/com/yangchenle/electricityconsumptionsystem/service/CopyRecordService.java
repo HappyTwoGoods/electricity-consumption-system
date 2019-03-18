@@ -29,4 +29,12 @@ public interface CopyRecordService {
      * @return
      */
     CopyRecordDTO selectCopyRecordById(Integer id);
+
+    /**
+     * 根据抄表员id查询抄表记录
+     *
+     * @param readerId
+     * @return
+     */
+    List<CopyRecordDTO> selectByReader(Integer readerId);
 }

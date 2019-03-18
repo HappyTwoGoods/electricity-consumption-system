@@ -28,6 +28,20 @@ public class TypeTableController {
         return CommonResult.success(typeTableDTOS);
     }
 
+    /**
+     * 用户查看用电类型信息
+     *
+     * @return
+     */
+    @GetMapping("/user/queryType")
+    public CommonResult queryType() {
+        List<TypeTableDTO> typeTableDTOS = typeTableService.selectTypeAll();
+        if (CollectionUtils.isEmpty(typeTableDTOS)) {
+            return CommonResult.fail(HttpStatus.NOT_FOUND);
+        }
+        return CommonResult.success(typeTableDTOS);
+    }
+
     @GetMapping("/manager/query/typeNum")
     public CommonResult queryTypeByNum(Integer num) {
         if (num == null || num < ElectricType.HOEM || num > ElectricType.FACTORY) {

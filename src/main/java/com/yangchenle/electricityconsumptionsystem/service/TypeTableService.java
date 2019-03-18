@@ -27,4 +27,12 @@ public interface TypeTableService {
      * @return
      */
     List<TypeTableDTO> selectTypeAll();
+
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     */
+    TypeTableDTO selectById(Integer id);
 }

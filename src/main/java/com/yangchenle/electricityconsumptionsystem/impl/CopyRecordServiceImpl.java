@@ -4,12 +4,15 @@ import com.yangchenle.electricityconsumptionsystem.dao.CopyRecordDao;
 import com.yangchenle.electricityconsumptionsystem.dto.CopyRecordDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.CopyRecordEntity;
 import com.yangchenle.electricityconsumptionsystem.service.CopyRecordService;
+import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
 import jdk.nashorn.internal.ir.annotations.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class CopyRecordServiceImpl implements CopyRecordService {
@@ -48,5 +51,17 @@ public class CopyRecordServiceImpl implements CopyRecordService {
         CopyRecordDTO copyRecordDTO = new CopyRecordDTO();
         BeanUtils.copyProperties(copyRecordEntity, copyRecordDTO);
         return copyRecordDTO;
+    }
+
+    @Override
+    public List<CopyRecordDTO> selectByReader(Integer readerId) {
+        if (readerId == null){
+            return null;
+        }
+        List<CopyRecordEntity> copyRecordEntityList = copyRecordDao.selectByReader(readerId);
+        if (CollectionUtils.isEmpty(copyRecordEntityList)){
+            return null;
+        }
+        return BeansListUtils.copyListProperties(copyRecordEntityList,CopyRecordDTO.class);
     }
 }
