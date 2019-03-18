@@ -1,5 +1,6 @@
 package com.yangchenle.electricityconsumptionsystem.service;
 
+import com.yangchenle.electricityconsumptionsystem.dto.PaySumMoneyDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
 
 import java.math.BigDecimal;
@@ -39,4 +40,13 @@ public interface PaymentRecordService {
      * @return
      */
     List<PaymentRecordDTO> selectPayRecordAll(Integer electricId, Date start, Date end);
+
+    /**
+     * 根据电表id||支付状态||时间统计缴费金额
+     * @param electricId
+     * @param start
+     * @param end
+     * @return
+     */
+    List<PaySumMoneyDTO> selectSum(Integer electricId, Date start, Date end);
 }

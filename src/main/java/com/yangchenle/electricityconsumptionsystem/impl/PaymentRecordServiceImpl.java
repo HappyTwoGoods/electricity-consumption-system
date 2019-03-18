@@ -2,7 +2,9 @@ package com.yangchenle.electricityconsumptionsystem.impl;
 
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.dao.PaymentRecordDao;
+import com.yangchenle.electricityconsumptionsystem.dto.PaySumMoneyDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
+import com.yangchenle.electricityconsumptionsystem.entity.PaySumMoneyEntity;
 import com.yangchenle.electricityconsumptionsystem.entity.PaymentRecordEntity;
 import com.yangchenle.electricityconsumptionsystem.service.PaymentRecordService;
 import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
@@ -48,5 +50,14 @@ public class PaymentRecordServiceImpl implements PaymentRecordService {
             return new ArrayList<>();
         }
         return BeansListUtils.copyListProperties(recordEntities, PaymentRecordDTO.class);
+    }
+
+    @Override
+    public List<PaySumMoneyDTO> selectSum(Integer electricId, Date start, Date end) {
+        List<PaySumMoneyEntity> sumMoneyEntities = paymentRecordDao.selectSum(electricId, PaymentState.PAID, start, end);
+        if (CollectionUtils.isEmpty(sumMoneyEntities)) {
+            return new ArrayList<>();
+        }
+        return BeansListUtils.copyListProperties(sumMoneyEntities, PaySumMoneyDTO.class);
     }
 }

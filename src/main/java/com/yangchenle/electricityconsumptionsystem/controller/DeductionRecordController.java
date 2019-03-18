@@ -81,7 +81,7 @@ public class DeductionRecordController {
         }
     }
 
-    @GetMapping("/manager/select/sum")
+    @GetMapping("/manager/select/deductionSum")
     public CommonResult selectSumPriceAndConsumption(@RequestParam(required = false) Integer electricNum,
                                                      @RequestParam(required = false) String start,
                                                      @RequestParam(required = false) String end) {

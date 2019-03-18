@@ -46,13 +46,29 @@
         FROM payment_record
         where PaymentState = #{state}
         <if test="electricId!=null">
-            ElctricId=#{electricId}
+           and ElectricId=#{electricId}
         </if>
         <if test="start!=null">
-            and addTime &gt;= #{start}
+            and AddTime &gt;= #{start}
         </if>
         <if test="end!=null">
             and AddTime &lt;= #{end}
         </if>
+    </select>
+
+    <select id="selectSum" parameterType="map" resultMap="PaymentRecord">
+        select sum(Money) money,ElectricId electricId
+        from payment_record
+        where PaymentState = #{state}
+        <if test="electricId!=null">
+           and ElectricId=#{electricId}
+        </if>
+        <if test="start!=null">
+            and AddTime &gt;= #{start}
+        </if>
+        <if test="end!=null">
+            and AddTime &lt;= #{end}
+        </if>
+        group by ElectricId
     </select>
 </mapper>
