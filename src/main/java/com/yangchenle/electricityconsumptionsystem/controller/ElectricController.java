@@ -53,8 +53,8 @@ public class ElectricController {
         if (num == null || num < 1 || type == null || type < ElectricType.HOEM || type > ElectricType.FACTORY) {
             return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
         }
-        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
-        if (electricDTO != null) {
+        List<ElectricDTO> electricDTOS = electricService.selectElectricByCondition(num, null, null);
+        if (!CollectionUtils.isEmpty(electricDTOS)) {
             return CommonResult.fail(403, "电表编号已存在");
         }
         int addNum = electricService.addElectric(num, type, data);
@@ -105,16 +105,19 @@ public class ElectricController {
         return CommonResult.success("删除成功");
     }
 
-    @GetMapping("/manager/select/electricByNum")
-    public CommonResult selectByNum(Integer num) {
-        if (num == null || num < 1) {
-            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
-        }
-        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
-        if (electricDTO == null) {
+    @GetMapping("/manager/select/electricByCondition")
+    public CommonResult selectByCondition(@RequestParam(required = false, defaultValue = "") Integer num,
+                                          @RequestParam(required = false, defaultValue = "") Integer type,
+                                          @RequestParam(required = false, defaultValue = "") Integer state) {
+        List<ElectricDTO> electricDTOS = electricService.selectElectricByCondition(num, type, state);
+        if (CollectionUtils.isEmpty(electricDTOS)) {
             return CommonResult.fail(HttpStatus.NOT_FOUND);
         }
-        return CommonResult.success(reElectricData(electricDTO));
+        ArrayList<reElectric> reElectrics = new ArrayList<>();
+        for (ElectricDTO electricDTO : electricDTOS) {
+            reElectrics.add(reElectricData(electricDTO));
+        }
+        return CommonResult.success(reElectrics);
     }
 
     /**
@@ -127,15 +130,15 @@ public class ElectricController {
      * @return
      */
     @GetMapping("/user/query/byCondition")
-    public CommonResult queryByCondition(@RequestParam(required = false, defaultValue = "")Integer electricNum,
-                                         @RequestParam(required = false, defaultValue = "")Integer type,
-                                         @RequestParam(required = false, defaultValue = "")Integer state,
-                                         HttpServletRequest request){
+    public CommonResult queryByCondition(@RequestParam(required = false, defaultValue = "") Integer electricNum,
+                                         @RequestParam(required = false, defaultValue = "") Integer type,
+                                         @RequestParam(required = false, defaultValue = "") Integer state,
+                                         HttpServletRequest request) {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-        List<ElectricDTO> electricDTOList = electricService.queryByCondition(userId,electricNum,type,state);
-        if (CollectionUtils.isEmpty(electricDTOList)){
-            return CommonResult.fail(404,"没有相关信息!");
+        List<ElectricDTO> electricDTOList = electricService.queryByCondition(userId, electricNum, type, state);
+        if (CollectionUtils.isEmpty(electricDTOList)) {
+            return CommonResult.fail(404, "没有相关信息!");
         }
         return CommonResult.success(electricDTOList);
     }

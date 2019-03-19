@@ -1,6 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
 import com.yangchenle.electricityconsumptionsystem.entity.ElectricEntity;
+import com.yangchenle.electricityconsumptionsystem.entity.PaySumMoneyEntity;
 import com.yangchenle.electricityconsumptionsystem.entity.PaymentRecordEntity;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,12 +34,13 @@ public interface PaymentRecordDao {
      * @return
      */
     int updatePayment(@Param("paymentMethod") Integer paymentMethod,
-                      @Param("money")BigDecimal money,
+                      @Param("money") BigDecimal money,
                       @Param("paymentState") Integer paymentState,
                       @Param("electricId") Integer electricId);
 
     /**
      * 根据电表id||支付状态||时间查缴费记录
+     *
      * @param electricId
      * @param state
      * @param start
@@ -47,8 +49,22 @@ public interface PaymentRecordDao {
      */
     List<PaymentRecordEntity> selectPayRecordAll(@Param("electricId") Integer electricId,
                                                  @Param("state") Integer state,
-                                                 @Param("start")Date start,
+                                                 @Param("start") Date start,
                                                  @Param("end") Date end);
+
+    /**
+     * 根据电表id||支付状态||时间统计缴费金额
+     * @param electricId
+     * @param state
+     * @param start
+     * @param end
+     * @return
+     */
+    List<PaySumMoneyEntity> selectSum(@Param("electricId") Integer electricId,
+                                      @Param("state") Integer state,
+                                      @Param("start") Date start,
+                                      @Param("end") Date end);
+
 
     /**
      * 添加缴费信息

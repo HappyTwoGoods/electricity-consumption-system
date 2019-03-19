@@ -77,7 +77,7 @@ public class UserController {
             UserDTO userDTO = userService.userLogin(userPhone);
             session.setAttribute(SessionParameters.PHONE, userPhone);
             session.setAttribute(SessionParameters.USERID, userDTO.getUserId());
-            session.setAttribute(userPhone,"");
+            session.setAttribute(userPhone, "");
             return CommonResult.success("登录成功");
         } catch (Exception e) {
             return CommonResult.fail(HttpStatus.ERROR);
@@ -91,10 +91,15 @@ public class UserController {
      * @return
      */
     @GetMapping("/user/logout")
-    public CommonResult logout(HttpServletRequest request){
+    public CommonResult logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        session.setAttribute(SessionParameters.USERID,"");
-        return CommonResult.success();
+        try {
+            session.setAttribute(SessionParameters.PHONE, "");
+            session.setAttribute(SessionParameters.USERID, "");
+            return CommonResult.success();
+        } catch (Exception e) {
+            return CommonResult.fail(500, "服务异常，退出登录失败");
+        }
     }
 
     /**
@@ -174,23 +179,23 @@ public class UserController {
      * @return
      */
     @GetMapping("/user/add/price")
-    public CommonResult addUserPrice(BigDecimal addPrice, HttpServletRequest request){
-        if (addPrice == null){
-            return CommonResult.fail(403,"参数失败！");
+    public CommonResult addUserPrice(BigDecimal addPrice, HttpServletRequest request) {
+        if (addPrice == null) {
+            return CommonResult.fail(403, "参数失败！");
         }
-      HttpSession session = request.getSession();
-      Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-      UserDTO userDTO = userService.queryById(userId);
-      if (userDTO.getUserId() == null){
-          return CommonResult.fail(500,"查看用户信息失败！");
-      }
-      BigDecimal price = userDTO.getPrice();
-      BigDecimal priceNum = price.add(addPrice);
-      int data = userService.payById(priceNum,userId);
-      if (data <= 0){
-          return CommonResult.fail(500,"充值失败!");
-      }
-      return CommonResult.success();
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        UserDTO userDTO = userService.queryById(userId);
+        if (userDTO.getUserId() == null) {
+            return CommonResult.fail(500, "查看用户信息失败！");
+        }
+        BigDecimal price = userDTO.getPrice();
+        BigDecimal priceNum = price.add(addPrice);
+        int data = userService.payById(priceNum, userId);
+        if (data <= 0) {
+            return CommonResult.fail(500, "充值失败!");
+        }
+        return CommonResult.success();
     }
 
 }

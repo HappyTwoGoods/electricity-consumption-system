@@ -9,6 +9,7 @@ import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.DeductionService;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
+import com.yangchenle.electricityconsumptionsystem.util.ElectricUtil;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +35,8 @@ public class DeductionRecordController {
     private ElectricService electricService;
     @Resource
     private UserService userService;
+    @Resource
+    private ElectricUtil electricUtil;
 
     @GetMapping("/manager/select/deductionAll")
     public CommonResult selectAll() {
@@ -49,18 +52,13 @@ public class DeductionRecordController {
     public CommonResult selectDeduction(@RequestParam(required = false) Integer electricNum,
                                         @RequestParam(required = false) String start,
                                         @RequestParam(required = false) String end) {
-        Integer electricId = null;
-        Date startTime = null;
-        Date endTime = null;
-        if (electricNum != null) {
-            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
-            if (electricDTO != null) {
-                electricId = electricDTO.getElectricId();
-            } else {
-                return CommonResult.fail(404, "电表编号不存在");
-            }
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startTime = null;
+        Date endTime = null;
         try {
             if (!StringUtils.isEmpty(start)) {
                 startTime = sdf.parse(start);
@@ -81,21 +79,17 @@ public class DeductionRecordController {
         }
     }
 
-    @GetMapping("/manager/select/sum")
+    @GetMapping("/manager/select/deductionSum")
     public CommonResult selectSumPriceAndConsumption(@RequestParam(required = false) Integer electricNum,
                                                      @RequestParam(required = false) String start,
                                                      @RequestParam(required = false) String end) {
-        Integer electricId = null;
+
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
+        }
         Date startTime = null;
         Date endTime = null;
-        if (electricNum != null) {
-            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
-            if (electricDTO == null) {
-                return CommonResult.fail(403, "电表编号不存在");
-            } else {
-                electricId = electricDTO.getElectricId();
-            }
-        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             if (!StringUtils.isEmpty(start)) {

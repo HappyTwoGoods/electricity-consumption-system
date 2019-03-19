@@ -5,13 +5,13 @@ import com.yangchenle.electricityconsumptionsystem.constant.ElectricState;
 import com.yangchenle.electricityconsumptionsystem.constant.PayMethod;
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
+import com.yangchenle.electricityconsumptionsystem.dto.*;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
-import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
-import com.yangchenle.electricityconsumptionsystem.service.PaymentRecordService;
-import com.yangchenle.electricityconsumptionsystem.service.UserService;
+import com.yangchenle.electricityconsumptionsystem.service.*;
+import com.yangchenle.electricityconsumptionsystem.util.ElectricUtil;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +42,8 @@ public class PaymentRecordController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private ElectricUtil electricUtil;
 
     /**
      * 缴费
@@ -105,21 +107,16 @@ public class PaymentRecordController {
         return CommonResult.success();
     }
 
-    @GetMapping("/select/payRecord")
+    @GetMapping("/manager/select/payRecord")
     public CommonResult selectPayRecord(@RequestParam(required = false) Integer electricNum,
                                         @RequestParam(required = false) String start,
                                         @RequestParam(required = false) String end) {
-        Integer electricId = null;
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
+        }
         Date startTime = null;
         Date endTime = null;
-        if (electricNum != null) {
-            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
-            if (electricDTO != null) {
-                electricId = electricDTO.getElectricId();
-            } else {
-                return CommonResult.fail(403, "电表编号不存在");
-            }
-        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (!StringUtils.isEmpty(start)) {
@@ -134,6 +131,36 @@ public class PaymentRecordController {
                 return CommonResult.fail(HttpStatus.NOT_FOUND);
             }
             return CommonResult.success(createRePayRecord(recordDTOS));
+        } catch (ParseException e) {
+            System.out.println("时间格式错误");
+            return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
+        }
+    }
+
+    @GetMapping("/manager/select/paySumMoney")
+    public CommonResult selectPaySumMoney(@RequestParam(required = false) Integer electricNum,
+                                          @RequestParam(required = false) String start,
+                                          @RequestParam(required = false) String end) {
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
+        }
+        Date startTime = null;
+        Date endTime = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (!StringUtils.isEmpty(start)) {
+                startTime = sdf.parse(start);
+            }
+            if (!StringUtils.isEmpty(end)) {
+                endTime = sdf.parse(end);
+                endTime = new DateTime(endTime).plusDays(1).toDate();
+            }
+            List<PaySumMoneyDTO> sumMoneyDTOS = paymentRecordService.selectSum(electricId, startTime, endTime);
+            if (CollectionUtils.isEmpty(sumMoneyDTOS)) {
+                return CommonResult.fail(HttpStatus.NOT_FOUND);
+            }
+            return CommonResult.success(createRePaySum(sumMoneyDTOS));
         } catch (ParseException e) {
             System.out.println("时间格式错误");
             return CommonResult.fail(HttpStatus.PARAMETER_ERROR);
@@ -223,6 +250,43 @@ public class PaymentRecordController {
             }
         }
         return rePayRecords;
+    }
+
+    private List<rePaySum> createRePaySum(List<PaySumMoneyDTO> list) {
+        List<rePaySum> reList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(list)) {
+            return reList;
+        }
+        for (PaySumMoneyDTO paySumMoneyDTO : list) {
+            rePaySum rePaySum = new rePaySum();
+            BeanUtils.copyProperties(paySumMoneyDTO, rePaySum);
+            ElectricDTO electricDTO = electricService.selectElectricById(paySumMoneyDTO.getElectricId());
+            if (electricDTO != null) {
+                rePaySum.setElectricNum(electricDTO.getNum());
+                if (electricDTO.getUserId() != null) {
+                    UserDTO userDTO = userService.queryById(electricDTO.getUserId());
+                    if (userDTO == null) {
+                        rePaySum.setUsername("数据有误");
+                    } else {
+                        rePaySum.setUserId(electricDTO.getUserId());
+                        rePaySum.setUsername(userDTO.getUserName());
+                    }
+                } else {
+                    rePaySum.setUsername("暂未绑定");
+                }
+                reList.add(rePaySum);
+            }
+        }
+        return reList;
+    }
+
+    @Data
+    private class rePaySum {
+        Integer electricId;
+        private Integer electricNum;
+        private Integer userId;
+        private String username;
+        BigDecimal money;
     }
 
     private int insertRecord(Integer electricId, BigDecimal money){
