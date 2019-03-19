@@ -77,4 +77,12 @@ public interface ElectricDao {
                                           @Param("electricNum") Integer electricNum,
                                           @Param("type") Integer type,
                                           @Param("state") Integer state);
+
+    /**
+     * 绑定用户
+     *
+     * @param userId
+     * @return
+     */
+    int updateUserEle(@Param("electricNum")Integer electricNum,@Param("userId")Integer userId);
 }

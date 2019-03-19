@@ -62,4 +62,14 @@ public class DeductionRecordServiceImpl implements DeductionService {
         return BeansListUtils.copyListProperties(sumEntities, MoneyAndConsumptionSumDTO.class);
     }
 
+    @Override
+    public int insertRecord(DeductionRecordDTO deductionRecordDTO) {
+        if (deductionRecordDTO.getElectricId() == null || deductionRecordDTO.getElectricConsumption() == null || deductionRecordDTO.getMoney() == null){
+            return 0;
+        }
+        DeductionRecordEntity deductionRecordEntity = new DeductionRecordEntity();
+        BeanUtils.copyProperties(deductionRecordDTO,deductionRecordEntity);
+        return deductionRecordDao.addDeductionRecord(deductionRecordEntity);
+    }
+
 }

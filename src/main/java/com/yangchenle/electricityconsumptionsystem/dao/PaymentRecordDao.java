@@ -49,4 +49,20 @@ public interface PaymentRecordDao {
                                                  @Param("state") Integer state,
                                                  @Param("start")Date start,
                                                  @Param("end") Date end);
+
+    /**
+     * 添加缴费信息
+     *
+     * @param payRecord
+     * @return
+     */
+    int insertRecord(@Param("payRecord") PaymentRecordEntity payRecord);
+
+    /**
+     * 删除记录
+     *
+     * @param electrocId
+     * @return
+     */
+    int deleteById(@Param("electricId")Integer electrocId);
 }

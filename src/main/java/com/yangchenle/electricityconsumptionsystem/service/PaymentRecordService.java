@@ -39,4 +39,20 @@ public interface PaymentRecordService {
      * @return
      */
     List<PaymentRecordDTO> selectPayRecordAll(Integer electricId, Date start, Date end);
+
+    /**
+     * 添加缴费记录
+     *
+     * @param paymentRecordDTO
+     * @return
+     */
+    int insertRecord(PaymentRecordDTO paymentRecordDTO);
+
+    /**
+     * 删除记录
+     *
+     * @param electricId
+     * @return
+     */
+    int deleteById(Integer electricId);
 }

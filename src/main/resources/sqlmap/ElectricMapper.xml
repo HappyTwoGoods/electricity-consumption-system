@@ -96,4 +96,12 @@
             AND state = #{state }
         </if>
     </select>
+
+    <update id="updateUserEle" parameterType="map">
+        UPDATE electric
+        SET
+        UserId = #{userId },
+        UpdateTime = NOW()
+        WHERE ElectricNum = #{electricNum }
+    </update>
 </mapper>

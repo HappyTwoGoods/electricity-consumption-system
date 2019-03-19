@@ -77,4 +77,11 @@
         FROM copy_record
         WHERE ReaderId = #{readerId }
     </select>
+
+    <select id="selectByElectrocId" parameterType="map" resultMap="CopyRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM copy_record
+        WHERE ElectricId = #{id }
+    </select>
 </mapper>

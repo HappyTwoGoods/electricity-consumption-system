@@ -41,4 +41,12 @@ public interface DeductionService {
      * @return
      */
     List<MoneyAndConsumptionSumDTO> selectSum(Integer electricId, Date start, Date end);
+
+    /**
+     * 添加记录
+     *
+     * @param deductionRecordDTO
+     * @return
+     */
+    int insertRecord(DeductionRecordDTO deductionRecordDTO);
 }

@@ -108,4 +108,12 @@ public class ElectricServiceImpl implements ElectricService {
         }
         return BeansListUtils.copyListProperties(electricEntityList,ElectricDTO.class);
     }
+
+    @Override
+    public int updateUserEle(Integer electricNum,Integer userId) {
+        if (userId == null){
+            return 0;
+        }
+        return electricDao.updateUserEle(electricNum,userId);
+    }
 }

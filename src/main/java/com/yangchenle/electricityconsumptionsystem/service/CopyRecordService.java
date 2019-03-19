@@ -37,4 +37,6 @@ public interface CopyRecordService {
      * @return
      */
     List<CopyRecordDTO> selectByReader(Integer readerId);
+
+    List<CopyRecordDTO> selectByElectrocId(Integer id);
 }

@@ -140,6 +140,54 @@ public class ElectricController {
         return CommonResult.success(electricDTOList);
     }
 
+    /**
+     * 电表绑定用户
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/user/band/userInfo")
+    public CommonResult bandUser(Integer electricNum,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        if (electricNum == null){
+            return CommonResult.fail(403,"参数错误！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
+        if (electricDTO == null){
+            return CommonResult.fail(500,"该电表编号不存在，请确认是否正确！");
+        }
+        if (electricDTO.getUserId() != null){
+            return CommonResult.fail(500,"该电表已绑定！");
+        }
+        int data = electricService.updateUserEle(electricNum,userId);
+        if (data <= 0){
+            return CommonResult.fail(500,"绑定失败！");
+        }
+        return CommonResult.success();
+    }
+
+    /**
+     * 发送提醒
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/user/send/remind")
+    public CommonResult sendRemind(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
+        List<Integer> electricNumList = new ArrayList<>();
+        for (ElectricDTO electricDTO : electricDTOList){
+            int r = electricDTO.getMoney().compareTo(BigDecimal.ZERO);
+            if (r < 0){
+                electricNumList.add(electricDTO.getNum());
+            }
+        }
+        return CommonResult.success(electricNumList);
+    }
+
     private reElectric reElectricData(ElectricDTO electricDTO) {
         if (electricDTO == null) {
             return null;

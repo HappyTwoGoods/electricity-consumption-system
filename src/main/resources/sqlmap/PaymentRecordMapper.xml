@@ -55,4 +55,23 @@
             and AddTime &lt;= #{end}
         </if>
     </select>
+
+    <insert id="insertRecord" parameterType="map" useGeneratedKeys="true" keyProperty="payRecord.paymentId">
+        INSERT INTO payment_record
+        (ElectricId, PaymentMethod, Money, PaymentState, AddTime, UpdateTime)
+        VALUES (
+        #{payRecord.electricId },
+        #{payRecord.paymentMethod },
+        #{payRecord.money },
+        #{payRecord.paymentState },
+        NOW(),
+        NOW()
+        )
+    </insert>
+
+    <delete id="deleteById" parameterType="map">
+        DELETE FROM
+        electric
+        WHERE ElectricId = #{electricId }
+    </delete>
 </mapper>

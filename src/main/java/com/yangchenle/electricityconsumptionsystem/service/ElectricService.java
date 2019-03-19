@@ -78,4 +78,12 @@ public interface ElectricService {
                                        Integer electricNum,
                                        Integer type,
                                        Integer state);
+
+    /**
+     * 绑定用户
+     *
+     * @param userId
+     * @return
+     */
+    int updateUserEle(Integer electricNum,Integer userId);
 }

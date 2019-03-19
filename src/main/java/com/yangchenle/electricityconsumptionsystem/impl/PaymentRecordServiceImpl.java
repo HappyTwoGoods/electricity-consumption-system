@@ -6,6 +6,7 @@ import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
 import com.yangchenle.electricityconsumptionsystem.entity.PaymentRecordEntity;
 import com.yangchenle.electricityconsumptionsystem.service.PaymentRecordService;
 import com.yangchenle.electricityconsumptionsystem.util.BeansListUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -48,5 +49,21 @@ public class PaymentRecordServiceImpl implements PaymentRecordService {
             return new ArrayList<>();
         }
         return BeansListUtils.copyListProperties(recordEntities, PaymentRecordDTO.class);
+    }
+
+    @Override
+    public int insertRecord(PaymentRecordDTO paymentRecordDTO) {
+        if (paymentRecordDTO.getElectricId() == null || paymentRecordDTO.getPaymentState() == null
+                || paymentRecordDTO.getMoney() == null || paymentRecordDTO.getPaymentMethod() == null){
+            return 0;
+        }
+        PaymentRecordEntity paymentRecordEntity = new PaymentRecordEntity();
+        BeanUtils.copyProperties(paymentRecordDTO,paymentRecordEntity);
+        return paymentRecordDao.insertRecord(paymentRecordEntity);
+    }
+
+    @Override
+    public int deleteById(Integer electricId) {
+        return 0;
     }
 }

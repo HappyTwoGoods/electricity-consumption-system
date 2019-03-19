@@ -64,4 +64,13 @@ public class CopyRecordServiceImpl implements CopyRecordService {
         }
         return BeansListUtils.copyListProperties(copyRecordEntityList,CopyRecordDTO.class);
     }
+
+    @Override
+    public List<CopyRecordDTO> selectByElectrocId(Integer id) {
+        if (id == null){
+            return null;
+        }
+        List<CopyRecordEntity> copyRecordEntityList = copyRecordDao.selectByElectrocId(id);
+        return BeansListUtils.copyListProperties(copyRecordEntityList,CopyRecordDTO.class);
+    }
 }

@@ -38,24 +38,32 @@ public class CopyRecordController {
     /**
      * 抄表员添加抄表记录
      *
-     * @param electricId
+     * @param electricNum
      * @param copyData
      * @return
      */
     @GetMapping("/reader/insert/record")
-    public CommonResult addRecord(Integer electricId, BigDecimal copyData, HttpServletRequest request){
-        if (electricId == null){
+    public CommonResult addRecord(Integer electricNum, BigDecimal copyData, HttpServletRequest request){
+        if (electricNum == null || copyData == null){
             return CommonResult.fail(403,"参数错误！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
+        if (electricDTO == null){
+            return CommonResult.fail(500,"请输入正确电表编号！");
         }
         HttpSession session = request.getSession();
         Integer readerId = (Integer) session.getAttribute(SessionParameters.READERID);
         CopyRecordDTO copyRecordDTO = new CopyRecordDTO();
-        copyRecordDTO.setElectricId(electricId);
+        copyRecordDTO.setElectricId(electricDTO.getElectricId());
         copyRecordDTO.setCopyData(copyData);
         copyRecordDTO.setReaderId(readerId);
         int result = copyRecordService.addCopyRecord(copyRecordDTO);
         if (result <= 0){
             return CommonResult.fail(500,"增加抄表记录失败！");
+        }
+        int data = electricService.updateElectric(copyData,null,null,electricDTO.getElectricId());
+        if (data <= 0){
+            return CommonResult.fail(500,"修改电表数据失败！");
         }
         return CommonResult.success();
     }
@@ -108,6 +116,42 @@ public class CopyRecordController {
         return CommonResult.success(readerEleDTOList);
     }
 
+    /**
+     * 抄表员查看抄表信息
+     *
+     * @param num
+     * @return
+     */
+    @GetMapping("/reader/selectByNum")
+    public CommonResult selectByNum(Integer num){
+        if (num == null){
+            return CommonResult.fail(403,"参数错误！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
+        if (electricDTO == null){
+            return CommonResult.fail(404,"没有该电表相关信息！");
+        }
+        UserDTO userDTO = userService.queryById(electricDTO.getUserId());
+        if (userDTO == null){
+            return CommonResult.fail(404,"没有相关信息！");
+        }
+        List<CopyRecordDTO> copyRecordDTOList = copyRecordService.selectByElectrocId(electricDTO.getElectricId());
+        if (CollectionUtils.isEmpty(copyRecordDTOList)){
+            return CommonResult.fail(404,"没有相关抄表记录！");
+        }
+        List<ReaderEleDTO> readerEleDTOList = new ArrayList<>();
+        for (CopyRecordDTO copyRecordDTO : copyRecordDTOList){
+            ReaderEleDTO readerEleDTO = new ReaderEleDTO();
+            readerEleDTO.setAddTime(copyRecordDTO.getAddTime());
+            readerEleDTO.setCopyData(copyRecordDTO.getCopyData());
+            readerEleDTO.setElectricNum(num);
+            readerEleDTO.setUserPhone(userDTO.getUserPhone());
+            readerEleDTO.setUserName(userDTO.getUserName());
+            readerEleDTOList.add(readerEleDTO);
+        }
+        return CommonResult.success(readerEleDTOList);
+    }
+
     @Data
     private class ReaderEleDTO{
 
@@ -120,18 +164,5 @@ public class CopyRecordController {
         private BigDecimal copyData;
 
         private Date addTime;
-    }
-
-    @Data
-    private class UserCopyDTO{
-
-        private Integer electricNum;
-
-        private String readerName;
-
-        private BigDecimal copyData;
-
-        private Date addTime;
-
     }
 }

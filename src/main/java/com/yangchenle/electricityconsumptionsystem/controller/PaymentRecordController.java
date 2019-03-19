@@ -2,11 +2,11 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.ElectricState;
+import com.yangchenle.electricityconsumptionsystem.constant.PayMethod;
 import com.yangchenle.electricityconsumptionsystem.constant.PaymentState;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.PaymentRecordDTO;
-import com.yangchenle.electricityconsumptionsystem.dto.TypeTableDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
@@ -15,7 +15,6 @@ import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
-import com.yangchenle.electricityconsumptionsystem.service.*;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,9 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class PaymentRecordController {
@@ -41,59 +42,6 @@ public class PaymentRecordController {
 
     @Resource
     private UserService userService;
-
-    /**
-     * 用户查看自己未缴费记录
-     *
-     * @return
-     */
-    @GetMapping("/user/query/payment")
-    public CommonResult queryPaymentRecord(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
-        if (CollectionUtils.isEmpty(electricDTOList)) {
-            return CommonResult.fail(404, "没有该用户电表记录");
-        }
-        Map<String, List<PaymentRecordDTO>> paymentMap = new HashMap<>();
-        for (ElectricDTO electric : electricDTOList) {
-            List<PaymentRecordDTO> paymentRecordDTOS = paymentRecordService.queryPayment(electric.getElectricId(), PaymentState.UNPAID);
-            if (CollectionUtils.isEmpty(paymentRecordDTOS)) {
-                continue;
-            }
-            paymentMap.put("paymentInfo", paymentRecordDTOS);
-        }
-        return CommonResult.success(paymentMap);
-    }
-    @Resource
-    private TypeTableService typeTableService;
-
-    @Resource
-    private DeductionService deductionService;
-
-//    /**
-//     * 用户查看自己未缴费记录
-//     *
-//     * @return
-//     */
-////    @GetMapping("/user/query/payment")
-//    public CommonResult queryPaymentRecord(HttpServletRequest request){
-//        HttpSession session = request.getSession();
-//        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-//        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
-//        if (CollectionUtils.isEmpty(electricDTOList)){
-//            return CommonResult.fail(404,"没有该用户电表记录");
-//        }
-//        Map<String,List<PaymentRecordDTO>> paymentMap = new HashMap<>();
-//        for (ElectricDTO electric: electricDTOList) {
-//            List<PaymentRecordDTO> paymentRecordDTOS = paymentRecordService.queryPayment(electric.getElectricId(), PaymentState.UNPAID);
-//            if (CollectionUtils.isEmpty(paymentRecordDTOS)){
-//                continue;
-//            }
-//            paymentMap.put("paymentInfo",paymentRecordDTOS);
-//        }
-//        return CommonResult.success(paymentMap);
-//    }
 
     /**
      * 缴费
@@ -140,17 +88,20 @@ public class PaymentRecordController {
             if (payResults <= 0){
                 return CommonResult.fail(500,"更改电表信息失败！");
             }
+            int data = insertRecord(electricId,money);
+            if (data <= 0){
+                return CommonResult.fail(404,"插入记录失败!");
+            }
             return CommonResult.success();
         }
         int payResulted = electricService.updateElectric(null,priceNum,ElectricState.NORMAL,electricId);
         if (payResulted <= 0){
             return CommonResult.fail(500,"更改电表信息失败！");
         }
-        Integer type = electricDTO.getType();
-        TypeTableDTO typeTableDTO = typeTableService.selectById(type);
-        BigDecimal typePrice = typeTableDTO.getPrice();
-        BigDecimal consumption = money.subtract(typePrice);
-//        int data = deductionService.
+        int data = insertRecord(electricId,money);
+        if (data <= 0){
+            return CommonResult.fail(404,"插入记录失败!");
+        }
         return CommonResult.success();
     }
 
@@ -189,6 +140,64 @@ public class PaymentRecordController {
         }
     }
 
+    /**
+     * 用户查看缴费记录
+     *
+     * @return
+     */
+    @GetMapping("/user/pay/record")
+    public CommonResult userPayRecord(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
+        if (CollectionUtils.isEmpty(electricDTOList)){
+            return CommonResult.fail(404,"没有该用户相关支付信息");
+        }
+        List<UserPayRecord> userPayRecordList = new ArrayList<>();
+        for (ElectricDTO electricDTO : electricDTOList){
+            List<PaymentRecordDTO> paymentRecordDTOList = paymentRecordService.queryPayment(electricDTO.getElectricId(),PaymentState.PAID);
+            for (PaymentRecordDTO paymentRecordDTO : paymentRecordDTOList){
+                UserPayRecord userPayRecord = new UserPayRecord();
+                userPayRecord.setElectricNum(electricDTO.getNum());
+                userPayRecord.setMoney(paymentRecordDTO.getMoney());
+                userPayRecord.setPayEleState(electricDTO.getState());
+                userPayRecord.setPayMethod(paymentRecordDTO.getPaymentMethod());
+                userPayRecord.setUpdateTime(paymentRecordDTO.getUpdateTime());
+                userPayRecordList.add(userPayRecord);
+            }
+        }
+       return CommonResult.success(userPayRecordList);
+    }
+
+    /**
+     * 根据electricNum查询缴费记录
+     *
+     * @param num
+     * @return
+     */
+    @GetMapping("/user/selectByNum")
+    public CommonResult selectByNum(Integer num){
+        if (num == null){
+            return CommonResult.fail(403,"参数错误！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
+        List<PaymentRecordDTO> paymentRecordDTOList = paymentRecordService.queryPayment(electricDTO.getElectricId(),PaymentState.PAID);
+        if (CollectionUtils.isEmpty(paymentRecordDTOList)) {
+            return CommonResult.fail(404,"没有该电表编号相关信息!");
+        }
+        List<UserPayRecord> userPayRecordList = new ArrayList<>();
+        for (PaymentRecordDTO paymentRecordDTO : paymentRecordDTOList){
+            UserPayRecord userPayRecord = new UserPayRecord();
+            userPayRecord.setElectricNum(num);
+            userPayRecord.setUpdateTime(paymentRecordDTO.getUpdateTime());
+            userPayRecord.setPayMethod(paymentRecordDTO.getPaymentMethod());
+            userPayRecord.setPayEleState(paymentRecordDTO.getPaymentState());
+            userPayRecord.setMoney(paymentRecordDTO.getMoney());
+            userPayRecordList.add(userPayRecord);
+        }
+        return CommonResult.success(userPayRecordList);
+    }
+
     private List<rePayRecord> createRePayRecord(List<PaymentRecordDTO> list) {
         List<rePayRecord> rePayRecords = new ArrayList<>();
         if (CollectionUtils.isEmpty(list)) {
@@ -216,6 +225,15 @@ public class PaymentRecordController {
         return rePayRecords;
     }
 
+    private int insertRecord(Integer electricId, BigDecimal money){
+        PaymentRecordDTO paymentRecordDTO = new PaymentRecordDTO();
+        paymentRecordDTO.setElectricId(electricId);
+        paymentRecordDTO.setMoney(money);
+        paymentRecordDTO.setPaymentMethod(PayMethod.WECHAT);
+        paymentRecordDTO.setPaymentState(PaymentState.PAID);
+        return paymentRecordService.insertRecord(paymentRecordDTO);
+    }
+
     @Data
     private class rePayRecord {
         private Integer paymentId;
@@ -226,5 +244,20 @@ public class PaymentRecordController {
         private Integer paymentState;
         private BigDecimal money;
         private Date addTime;
+    }
+
+    @Data
+    private class UserPayRecord{
+
+        private Integer electricNum;
+
+        private BigDecimal money;
+
+        private Integer payEleState;
+
+        private Integer payMethod;
+
+        private Date updateTime;
+
     }
 }
