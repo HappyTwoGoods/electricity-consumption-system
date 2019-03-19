@@ -7,6 +7,7 @@ import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
 import com.yangchenle.electricityconsumptionsystem.dto.*;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
 import com.yangchenle.electricityconsumptionsystem.service.*;
+import com.yangchenle.electricityconsumptionsystem.util.ElectricUtil;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +36,8 @@ public class PaymentRecordController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private ElectricUtil electricUtil;
 
     /**
      * 用户查看自己未缴费记录
@@ -153,17 +156,12 @@ public class PaymentRecordController {
     public CommonResult selectPayRecord(@RequestParam(required = false) Integer electricNum,
                                         @RequestParam(required = false) String start,
                                         @RequestParam(required = false) String end) {
-        Integer electricId = null;
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
+        }
         Date startTime = null;
         Date endTime = null;
-        if (electricNum != null) {
-            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
-            if (electricDTO != null) {
-                electricId = electricDTO.getElectricId();
-            } else {
-                return CommonResult.fail(403, "电表编号不存在");
-            }
-        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (!StringUtils.isEmpty(start)) {
@@ -188,17 +186,12 @@ public class PaymentRecordController {
     public CommonResult selectPaySumMoney(@RequestParam(required = false) Integer electricNum,
                                           @RequestParam(required = false) String start,
                                           @RequestParam(required = false) String end) {
-        Integer electricId = null;
+        Integer electricId = electricUtil.isExist(electricNum);
+        if (electricId != null && electricId < 0) {
+            return CommonResult.fail(403, "电表编号不存在");
+        }
         Date startTime = null;
         Date endTime = null;
-        if (electricNum != null) {
-            ElectricDTO electricDTO = electricService.selectElectricByNum(electricNum);
-            if (electricDTO != null) {
-                electricId = electricDTO.getElectricId();
-            } else {
-                return CommonResult.fail(403, "电表编号不存在");
-            }
-        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             if (!StringUtils.isEmpty(start)) {

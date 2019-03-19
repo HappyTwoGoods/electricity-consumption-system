@@ -87,25 +87,21 @@ public class ElectricServiceImpl implements ElectricService {
     }
 
     @Override
-    public ElectricDTO selectElectricByNum(Integer num) {
-        if (num == null || num < 0) {
+    public List<ElectricDTO> selectElectricByCondition(Integer electricNum, Integer type, Integer state) {
+        List<ElectricEntity> electricEntities = electricDao.selectElectricByCondition(electricNum, type, state);
+        if (CollectionUtils.isEmpty(electricEntities)) {
             return null;
         }
-        ElectricEntity electricEntity = electricDao.selectElectricByNum(num);
-        if (electricEntity == null) {
-            return null;
-        }
-        ElectricDTO electricDTO = new ElectricDTO();
-        BeanUtils.copyProperties(electricEntity, electricDTO);
-        return electricDTO;
+        return BeansListUtils.copyListProperties(electricEntities, ElectricDTO.class);
     }
 
+
     @Override
-    public List<ElectricDTO> queryByCondition(Integer userId,Integer electricNum, Integer type, Integer state) {
-        List<ElectricEntity> electricEntityList = electricDao.queryByCondition(userId,electricNum,type,state);
-        if (CollectionUtils.isEmpty(electricEntityList)){
+    public List<ElectricDTO> queryByCondition(Integer userId, Integer electricNum, Integer type, Integer state) {
+        List<ElectricEntity> electricEntityList = electricDao.queryByCondition(userId, electricNum, type, state);
+        if (CollectionUtils.isEmpty(electricEntityList)) {
             return null;
         }
-        return BeansListUtils.copyListProperties(electricEntityList,ElectricDTO.class);
+        return BeansListUtils.copyListProperties(electricEntityList, ElectricDTO.class);
     }
 }

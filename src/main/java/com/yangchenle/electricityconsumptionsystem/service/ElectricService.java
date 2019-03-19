@@ -60,11 +60,15 @@ public interface ElectricService {
     List<ElectricDTO> selectElectricAll();
 
     /**
-     *根据电表编号查询电表
-     * @param num
+     * 根据电表号||状态||类型查询电表
+     * @param electricNum
+     * @param type
+     * @param state
      * @return
      */
-    ElectricDTO selectElectricByNum(Integer num);
+    List<ElectricDTO> selectElectricByCondition(Integer electricNum,
+                                                Integer type,
+                                                Integer state);
 
     /**
      * 动态查询电表信息

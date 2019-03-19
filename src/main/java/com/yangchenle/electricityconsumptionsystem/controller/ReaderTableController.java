@@ -78,7 +78,7 @@ public class ReaderTableController {
             ReaderAccountDTO readerAccountDTO = readerTableService.readerLogin(readerPhone);
             session.setAttribute(SessionParameters.PHONE, readerPhone);
             session.setAttribute(SessionParameters.READERID, readerAccountDTO.getReaderId());
-            session.setAttribute(readerPhone,"");
+            session.setAttribute(readerPhone, "");
             return CommonResult.success("登录成功！");
         } catch (Exception e) {
             return CommonResult.fail(HttpStatus.ERROR);
@@ -91,10 +91,15 @@ public class ReaderTableController {
      * @return
      */
     @GetMapping("/reader/logout")
-    public CommonResult readerLogout(HttpServletRequest request){
+    public CommonResult readerLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        session.setAttribute(SessionParameters.READERID,"");
-        return CommonResult.success();
+        try {
+            session.setAttribute(SessionParameters.READERID, "");
+            session.setAttribute(SessionParameters.PHONE, "");
+            return CommonResult.success();
+        } catch (Exception e) {
+            return CommonResult.fail(HttpStatus.ERROR);
+        }
     }
 
     /**

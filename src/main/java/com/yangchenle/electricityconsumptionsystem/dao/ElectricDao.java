@@ -66,12 +66,16 @@ public interface ElectricDao {
     List<ElectricEntity> selectElectricAll();
 
     /**
-     * 根据电表号查询电表
-     *
-     * @param num
+     * 根据电表号||状态||类型查询电表
+     * @param electricNum
+     * @param type
+     * @param state
      * @return
      */
-    ElectricEntity selectElectricByNum(@Param("num") Integer num);
+
+    List<ElectricEntity> selectElectricByCondition(@Param("electricNum") Integer electricNum,
+                                                   @Param("type") Integer type,
+                                                   @Param("state") Integer state);
 
     List<ElectricEntity> queryByCondition(@Param("userId")Integer userId,
                                           @Param("electricNum") Integer electricNum,

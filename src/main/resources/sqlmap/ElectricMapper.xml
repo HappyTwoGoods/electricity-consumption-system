@@ -73,11 +73,20 @@
         from electric
     </select>
 
-    <select id="selectElectricByNum" parameterType="int" resultMap="Electric">
+    <select id="selectElectricByCondition" parameterType="int" resultMap="Electric">
         select
         <include refid="allFile"/>
         from electric
-        where ElectricNum=#{num}
+        where 1=1
+        <if test="electricNum != null">
+            AND ElectricNum = #{electricNum }
+        </if>
+        <if test="type != null">
+            AND Type = #{type }
+        </if>
+        <if test="state != null">
+            AND state = #{state }
+        </if>
     </select>
     
     <select id="queryByCondition" parameterType="map" resultMap="Electric">
