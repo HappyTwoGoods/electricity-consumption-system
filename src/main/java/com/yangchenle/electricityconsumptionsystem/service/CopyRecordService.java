@@ -39,4 +39,12 @@ public interface CopyRecordService {
     List<CopyRecordDTO> selectByReader(Integer readerId);
 
     List<CopyRecordDTO> selectByElectrocId(Integer id);
+
+    /**
+     * 查看近7次抄表记录
+     *
+     * @param id
+     * @return
+     */
+    List<CopyRecordDTO> getEcharsInfo(Integer id);
 }

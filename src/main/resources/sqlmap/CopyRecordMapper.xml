@@ -84,4 +84,14 @@
         FROM copy_record
         WHERE ElectricId = #{id }
     </select>
+
+    <select id="getEcharsInfo" parameterType="map" resultMap="CopyRecord">
+        SELECT
+        <include refid="allFile"/>
+        FROM copy_record
+        WHERE ElectricId = #{id }
+        ORDER BY UpdateTime
+        ASC
+        limit 7
+    </select>
 </mapper>

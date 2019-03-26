@@ -1,6 +1,7 @@
 package com.yangchenle.electricityconsumptionsystem.dao;
 
 import com.yangchenle.electricityconsumptionsystem.entity.CopyRecordEntity;
+import lombok.Data;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -46,4 +47,12 @@ public interface CopyRecordDao {
     List<CopyRecordEntity> selectByReader(@Param("readerId")Integer readerId);
 
     List<CopyRecordEntity> selectByElectrocId(@Param("id")Integer id);
+
+    /**
+     * 查看近七次抄表记录
+     *
+     * @param id
+     * @return
+     */
+    List<CopyRecordEntity> getEcharsInfo(@Param("id") Integer id);
 }

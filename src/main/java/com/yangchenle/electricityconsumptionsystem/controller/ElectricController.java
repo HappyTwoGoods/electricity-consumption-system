@@ -3,9 +3,11 @@ package com.yangchenle.electricityconsumptionsystem.controller;
 import com.yangchenle.electricityconsumptionsystem.common.CommonResult;
 import com.yangchenle.electricityconsumptionsystem.constant.ElectricType;
 import com.yangchenle.electricityconsumptionsystem.constant.SessionParameters;
+import com.yangchenle.electricityconsumptionsystem.dto.CopyRecordDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.ElectricDTO;
 import com.yangchenle.electricityconsumptionsystem.dto.UserDTO;
 import com.yangchenle.electricityconsumptionsystem.emun.HttpStatus;
+import com.yangchenle.electricityconsumptionsystem.service.CopyRecordService;
 import com.yangchenle.electricityconsumptionsystem.service.ElectricService;
 import com.yangchenle.electricityconsumptionsystem.service.UserService;
 import lombok.Data;
@@ -20,9 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class ElectricController {
@@ -31,6 +31,8 @@ public class ElectricController {
     private ElectricService electricService;
     @Resource
     private UserService userService;
+    @Resource
+    private CopyRecordService copyRecordService;
 
     /**
      * 查看用电信息
@@ -189,6 +191,28 @@ public class ElectricController {
             }
         }
         return CommonResult.success(electricNumList);
+    }
+
+    /**
+     * 获取每个电表的抄表记录
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping("/user/getEachars")
+    public CommonResult getEacharsInfo(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
+        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
+        if (CollectionUtils.isEmpty(electricDTOList)) {
+            return CommonResult.fail(404,"该用户暂无绑定电表");
+        }
+        Map<Integer,List<CopyRecordDTO>> resultMap = new HashMap<>();
+        for (ElectricDTO electricDTO : electricDTOList) {
+            List<CopyRecordDTO> copyRecordDTOList = copyRecordService.getEcharsInfo(electricDTO.getElectricId());
+            resultMap.put(electricDTO.getNum(),copyRecordDTOList);
+        }
+        return CommonResult.success(resultMap);
     }
 
     private reElectric reElectricData(ElectricDTO electricDTO) {
