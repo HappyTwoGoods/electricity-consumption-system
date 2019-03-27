@@ -196,23 +196,20 @@ public class ElectricController {
     /**
      * 获取每个电表的抄表记录
      *
-     * @param request
+     * @param num
      * @return
      */
     @GetMapping("/user/getEachars")
-    public CommonResult getEacharsInfo(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute(SessionParameters.USERID);
-        List<ElectricDTO> electricDTOList = electricService.queryEleByUserId(userId);
-        if (CollectionUtils.isEmpty(electricDTOList)) {
+    public CommonResult getEacharsInfo(Integer num) {
+        if (num == null) {
+            return CommonResult.fail(403,"参数错误！");
+        }
+        ElectricDTO electricDTO = electricService.selectElectricByNum(num);
+        if (electricDTO == null) {
             return CommonResult.fail(404,"该用户暂无绑定电表");
         }
-        Map<Integer,List<CopyRecordDTO>> resultMap = new HashMap<>();
-        for (ElectricDTO electricDTO : electricDTOList) {
-            List<CopyRecordDTO> copyRecordDTOList = copyRecordService.getEcharsInfo(electricDTO.getElectricId());
-            resultMap.put(electricDTO.getNum(),copyRecordDTOList);
-        }
-        return CommonResult.success(resultMap);
+        List<CopyRecordDTO> copyRecordDTOList = copyRecordService.getEcharsInfo(electricDTO.getElectricId());
+        return CommonResult.success(copyRecordDTOList);
     }
 
     private reElectric reElectricData(ElectricDTO electricDTO) {

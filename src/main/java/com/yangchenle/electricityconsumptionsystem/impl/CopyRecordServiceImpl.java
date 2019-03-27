@@ -80,6 +80,6 @@ public class CopyRecordServiceImpl implements CopyRecordService {
             return null;
         }
         List<CopyRecordEntity> copyRecordEntityList = copyRecordDao.getEcharsInfo(id);
-        return null;
+        return BeansListUtils.copyListProperties(copyRecordEntityList,CopyRecordDTO.class);
     }
 }

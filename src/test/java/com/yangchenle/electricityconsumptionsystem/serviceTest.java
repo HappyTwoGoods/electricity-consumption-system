@@ -95,6 +95,12 @@ public class serviceTest {
         System.out.println(data);
     }
 
+    @Test
+    public void queryEchars(){
+        List<CopyRecordDTO> copyRecordDTOList = copyRecordService.getEcharsInfo(1);
+        System.out.println(copyRecordDTOList);
+    }
+
 
 
 

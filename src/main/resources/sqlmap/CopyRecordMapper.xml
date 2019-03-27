@@ -94,4 +94,5 @@
         ASC
         limit 7
     </select>
+
 </mapper>
